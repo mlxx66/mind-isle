@@ -1,15 +1,26 @@
 # 心屿 Mind Isle · 心理测试网站管理台
 
-一个无需构建、直接运行的静态心理测试管理台。所有演示数据保存在浏览器 `localStorage`，适合产品评审、交互验证和后续接入 Supabase。
+一个无需构建、直接运行的静态心理测试管理台。登录与数据同步由 Supabase 提供，登录后的测试/模板改动会保存到云端，跨设备可用。
 
 ## 打开方式
 
-直接双击 `index.html`，或在目录内启动任意静态文件服务器。
+双击 `index.html`，或部署到 GitHub Pages / 任意静态服务器。
 
-登录信息（必须手动输入，无演示 bypass）：
+登录信息（走 Supabase Auth，必须手动输入）：
 
 - 邮箱：`mlxx4235@cc.com`
 - 密码：`ysyqdzgnr666`
+
+## Supabase 接入
+
+项目已内置 REST 云层（`assets/cloud.js`），无需外部 SDK。要更换实例，修改文件顶部 `URL_BASE` 与 `ANON_KEY` 即可。
+
+- 登录：Supabase Auth `signInWithPassword`，token 存本地并自动刷新
+- 数据：整包测试/模板/验证码存 `app_state` 表单行，登录后自动拉取、改动后 400ms 防抖写回
+- 未登录用户：只读云端快照，保证分享链接在任意设备可打开
+- `SUPABASE_SETUP.sql` 与页面同目录，含建表、RLS 策略与管理员账号创建语句（逐条执行）
+
+安全说明：`anon` 仅可读、`authenticated` 可读写。若要彻底隐藏验证码/题目，需将校验迁移到 Edge Function（service_role 只在服务端使用），前端不直接读题库。
 
 ## 已导入题库
 
@@ -76,8 +87,10 @@
 ```text
 mind-isle-admin/
 ├── index.html
+├── SUPABASE_SETUP.sql
 ├── assets/
 │   ├── app.js
+│   ├── cloud.js
 │   ├── scoring.js
 │   ├── question-bank.js
 │   ├── web-tests.js

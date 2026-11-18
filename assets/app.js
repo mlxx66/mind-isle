@@ -312,8 +312,37 @@
     seedData.version = 2;
   }
 
+  const CLOUD = window.MindIsleCloud || null;
+  let cloudReady = false;
+  let cloudPulled = false;
+
+  function applyCloudState(remote) {
+    if (!remote || !remote.tests || !Array.isArray(remote.tests)) return false;
+    const merged = normalizeData(mergeQuestionBank(clone(remote)));
+    data = merged;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return true;
+  }
+  function cloudPull() {
+    if (!CLOUD || !CLOUD.ready) return Promise.resolve();
+    return CLOUD.pullState().then(remote => {
+      if (applyCloudState(remote)) {
+        cloudPulled = true;
+        rerender();
+        toast('已从云端同步最新数据');
+      }
+    }).catch(() => {});
+  }
+  function cloudPush() {
+    if (!CLOUD || !CLOUD.ready || !CLOUD.isSignedIn()) return;
+    clearTimeout(cloudPush._t);
+    cloudPush._t = setTimeout(() => {
+      CLOUD.pushState(clone(data)).catch(() => {});
+    }, 400);
+  }
+
   let data;
-  let session = localStorage.getItem(SESSION_KEY) === '1';
+  let session = CLOUD ? CLOUD.isSignedIn() : (localStorage.getItem(SESSION_KEY) === '1');
   let currentRoute = '';
   let navigationEpoch = 0;
   let state = {
@@ -396,7 +425,8 @@
   }
   function saveData() {
     try { data = normalizeData(data); localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-    catch (e) { toast('本地存储空间不足，数据未保存', 'error'); }
+    catch (e) { toast('本地存储空间不足，数据未保存', 'error'); return; }
+    cloudPush();
   }
   data = loadData();
 
@@ -561,6 +591,7 @@
             '<div class="login-template-mini mini-paper"><span class="mini-title">古籍花笺</span><span class="mini-orbit"></span><span class="mini-glyph">花</span></div>' +
             '<div class="login-template-mini mini-cute"><span class="mini-title">奶油贴纸</span><span class="mini-orbit"></span><span class="mini-glyph">萌</span></div>' +
             '<div class="login-template-mini mini-fairy"><span class="mini-title">星砂童话</span><span class="mini-orbit"></span><span class="mini-glyph">狐</span></div>' +
+            '<div class="login-template-mini mini-hogwarts"><span class="mini-title">魔法学院</span><span class="mini-orbit"></span><span class="mini-glyph">✦</span></div>' +
           '</div>' +
         '</div>' +
       '</section>' +
@@ -572,7 +603,7 @@
           '<div id="login-error"></div>' +
           '<button class="btn btn-primary login-submit" type="submit">进入管理台 ' + icon('arrowUpRight') + '</button>' +
         '</form>' +
-        '<div class="login-footer">Mind Isle Studio · 本地数据演示版</div>' +
+        '<div class="login-footer">Mind Isle Studio · Supabase 云端版</div>' +
       '</div></section>' +
     '</div>';
   }
@@ -1219,7 +1250,9 @@
       case 'close-modal': closeModal(); break;
       case 'toggle-sidebar': $('#sidebar')?.classList.toggle('open'); break;
       case 'logout':
-        session = false; localStorage.removeItem(SESSION_KEY); location.hash = '#/login'; break;
+        session = false; localStorage.removeItem(SESSION_KEY);
+        if(CLOUD&&CLOUD.ready) CLOUD.signOut().catch(()=>{});
+        location.hash = '#/login'; break;
       case 'notifications': toast('暂无新的系统通知'); break;
       case 'reset-demo': closeModal(); confirmModal('重置演示数据？','所有本地修改会恢复为初始示例内容，且无法撤销。','confirm-reset-demo','','确认重置'); break;
       case 'confirm-reset-demo': data=normalizeData(mergeQuestionBank(clone(seedData))); saveData(); state.testsView={tab:'all',search:'',category:'all',template:'all',sort:'updated',selected:new Set()}; state.codesView={search:'',status:'all'}; state.editorDraft=null; state.editorId=null; state.importParsed=[]; state.importText=''; closeModal(); toast('演示数据已重置'); location.hash='#/admin'; rerender(); break;
@@ -1375,8 +1408,25 @@
     const kind=form.dataset.form;
     if(kind==='login') {
       const fd=new FormData(form); const email=String(fd.get('email')||'').trim(); const pass=String(fd.get('password')||'');
-      if(email==='mlxx4235@cc.com' && pass==='ysyqdzgnr666') { session=true; localStorage.setItem(SESSION_KEY,'1'); location.hash='#/admin'; toast('登录成功'); }
-      else { const box=$('#login-error'); if(box)box.innerHTML='<div class="login-error">邮箱或密码不正确，请重新输入。</div>'; }
+      const btn=form.querySelector('[type="submit"]'); const errBox=$('#login-error');
+      if(errBox) errBox.innerHTML='';
+      if(btn){btn.disabled=true;btn.dataset.orig=btn.innerHTML;btn.innerHTML='正在登录…';}
+      const done=(ok,msg)=>{
+        if(!ok){ if(errBox)errBox.innerHTML='<div class="login-error">'+esc(msg||'邮箱或密码不正确，请重新输入。')+'</div>'; if(btn){btn.disabled=false;if(btn.dataset.orig)btn.innerHTML=btn.dataset.orig;} return; }
+        session=true; localStorage.setItem(SESSION_KEY,'1');
+        location.hash='#/admin'; toast('登录成功');
+        if(CLOUD&&CLOUD.ready){
+          CLOUD.pullState().then(remote=>{
+            if(remote&&applyCloudState(remote)){ cloudPulled=true; rerender(); toast('已从云端同步数据'); }
+            else { cloudPush(); }
+          }).catch(()=>{ cloudPush(); });
+        }
+      };
+      if(CLOUD&&CLOUD.ready){
+        CLOUD.signIn(email,pass).then(()=>done(true)).catch(e=>done(false,e&&e.status===401?'邮箱或密码不正确，请重新输入。':('登录失败：'+(e&&e.message||'网络错误'))));
+      } else {
+        if(email==='mlxx4235@cc.com'&&pass==='ysyqdzgnr666') done(true); else done(false);
+      }
       return;
     }
     if(kind==='add-template') {
@@ -1442,4 +1492,11 @@
   window.addEventListener('hashchange', () => { navigationEpoch += 1; render(); });
   if(!location.hash) location.hash = session ? '#/admin' : '#/login';
   else render();
+  // 启动同步：已登录拉取完整数据；未登录拉取只读快照，保证分享链接在任意设备可打开
+  if(CLOUD && CLOUD.ready){
+    if(CLOUD.isSignedIn()) cloudPull();
+    else CLOUD.pullStateAnon().then(remote=>{
+      if(remote && applyCloudState(remote) && location.hash.startsWith('#/q/')) rerender();
+    }).catch(()=>{});
+  }
 })();
