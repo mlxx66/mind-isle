@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>测一测｜你最像哪位中国历史人物</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E2563E'/%3E%3Ctext x='32' y='46' font-size='32' font-family='serif' fill='%23fff' text-anchor='middle'%3E%E6%B5%8B%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+<style>
+@property --p{syntax:'<number>';inherits:false;initial-value:0}
+:root{
+  --ink:#F3F0FC;
+  --ink-2:#C6BEE4;
+  --ink-3:#9A90C2;
+  --violet:#A78BFA;
+  --violet-2:#7C5CFA;
+  --violet-3:#5B4BE0;
+  --cyan:#8EE7DA;
+  --cinnabar:#DE5A40;
+  --line:rgba(167,139,250,.20);
+  --line-soft:rgba(167,139,250,.10);
+  --panel:rgba(255,255,255,.04);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  font-size:15px;line-height:1.75;letter-spacing:.01em;
+  background:#070515;min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(168,85,247,.35);color:#fff}
+:focus-visible{outline:2px solid #C4B5FD;outline-offset:3px}
+h1,h2,h3,h4,p{margin:0}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* ---------- 背景层 ---------- */
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1100px 680px at 10% -12%, rgba(88,101,242,.40), transparent 62%),
+    radial-gradient(900px 620px at 96% 4%, rgba(168,85,247,.36), transparent 64%),
+    radial-gradient(760px 620px at 46% 112%, rgba(56,189,248,.16), transparent 66%),
+    linear-gradient(178deg,#080616 0%,#120E33 46%,#1B103D 100%);
+}
+.aurora::after{content:"";position:absolute;inset:0;opacity:.05;
+  background-image:radial-gradient(rgba(255,255,255,.9) .5px,transparent .6px);
+  background-size:3px 3px}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.20;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
+
+.wrap{max-width:800px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.screen{display:none;min-height:100vh;position:relative;z-index:1}
+.screen.on{display:block;animation:screenIn .45s ease both}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- 通用小件 ---------- */
+.sealmark{display:inline-flex;align-items:center;gap:11px;font-size:12px;letter-spacing:.30em;color:var(--ink-3)}
+.sealmark b{width:24px;height:24px;border-radius:4px;background:var(--cinnabar);display:grid;place-items:center;
+  color:#fff;font-family:"Noto Serif SC",serif;font-size:14px;font-weight:600;letter-spacing:0;box-shadow:0 6px 18px -8px rgba(222,90,64,.9)}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12.5px;
+  color:var(--ink-2);letter-spacing:.06em;background:rgba(255,255,255,.03);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:15px 32px;border-radius:999px;font-size:15px;font-weight:500;letter-spacing:.08em;
+  background:linear-gradient(104deg,#6D5BF6 0%,#8B5CF6 46%,#B15CF2 100%);
+  color:#fff;box-shadow:0 14px 34px -14px rgba(124,92,250,.95),inset 0 1px 0 rgba(255,255,255,.22);
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+.btn:hover{transform:translateY(-2px);filter:saturate(1.08)}
+.btn:active{transform:translateY(0) scale(.99)}
+.btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--line);color:var(--ink-2);font-size:13px;transition:.18s}
+.btn-ghost:hover{border-color:rgba(196,181,253,.55);color:#fff;background:rgba(255,255,255,.05)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);border:0;margin:0}
+
+/* ---------- 启动页 ---------- */
+.intro{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(44px,8vh,88px) 0 clamp(28px,5vh,48px)}
+.kicker{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.h1{font-family:"Noto Serif SC","Songti SC",serif;font-weight:700;
+  font-size:clamp(36px,7.8vw,60px);line-height:1.12;letter-spacing:.015em;margin:24px 0 0}
+.h1 .thin{display:block;font-weight:400;font-size:clamp(20px,3.4vw,26px);color:var(--ink-2);
+  letter-spacing:.10em;margin-top:16px;font-family:"Noto Sans SC",sans-serif}
+.sub{margin-top:26px;max-width:34em;color:var(--ink-2);font-size:15px;line-height:2.05}
+.sub strong{color:#EDE7FF;font-weight:500}
+.metas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.avatars{display:flex;align-items:flex-end;margin:36px 0 6px;padding-left:6px}
+.avatars .av{width:clamp(52px,15vw,72px);margin-left:clamp(-14px,-3vw,-6px);border-radius:7px;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(232,222,201,.28),0 12px 24px -12px rgba(10,4,32,.75);
+  filter:drop-shadow(0 10px 20px rgba(10,4,32,.5));transition:transform .3s ease}
+.avatars .av:first-child{margin-left:0}
+.avatars .av:hover{transform:translateY(-6px)}
+.avatars .av svg{display:block;width:100%;height:auto}
+.avatars .cap{margin-left:16px;font-size:12px;color:var(--ink-3);line-height:1.9;letter-spacing:.04em;padding-bottom:4px}
+.startbox{margin-top:58px;display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+.seg{display:inline-flex;padding:4px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.035)}
+.seg button{padding:9px 18px;border-radius:999px;font-size:13.5px;color:var(--ink-3);letter-spacing:.05em;transition:.2s}
+.seg button[aria-pressed="true"]{background:linear-gradient(100deg,rgba(124,92,250,.55),rgba(177,92,242,.45));
+  color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.intro-foot{margin-top:22px;font-size:12px;color:#7F76A8;letter-spacing:.04em;line-height:1.9}
+
+/* ---------- 答题页 ---------- */
+.quiz{padding:0 24px 70px}
+.qhead{position:sticky;top:0;z-index:6;padding:20px 0 14px}
+.qhead::before{content:"";position:absolute;inset:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;
+  background:linear-gradient(180deg,rgba(9,7,26,.95) 0%,rgba(9,7,26,.74) 62%,rgba(9,7,26,0) 100%);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.qhead-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.qcount{font-family:"Noto Serif SC",serif;font-size:13px;letter-spacing:.14em;color:var(--ink-3)}
+.qcount b{color:#E9E3FF;font-size:19px;font-weight:600}
+.pbar{height:2px;margin-top:13px;border-radius:2px;background:rgba(255,255,255,.10);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;border-radius:2px;
+  background:linear-gradient(90deg,#6366F1,#A855F7 70%,#C084FC);transition:width .4s cubic-bezier(.2,.7,.3,1)}
+.qbody{padding-top:clamp(22px,5vh,44px);animation:qIn .42s cubic-bezier(.2,.7,.3,1) both}
+@keyframes qIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.qno{font-size:12px;letter-spacing:.22em;color:var(--ink-3)}
+.qtext{font-family:"Noto Serif SC",serif;font-size:clamp(21px,3.5vw,26px);line-height:1.6;
+  font-weight:600;margin:12px 0 6px;letter-spacing:.02em}
+.qhint{font-size:12.5px;color:#8F85B8;letter-spacing:.04em;margin-bottom:26px}
+.opts{display:grid;gap:12px}
+.opt{display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;
+  padding:15px 18px;border-radius:15px;border:1px solid rgba(167,139,250,.20);
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.016));
+  color:#EAE5FA;font-size:15px;line-height:1.6;letter-spacing:.01em;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease;
+  animation:optIn .38s cubic-bezier(.2,.7,.3,1) both}
+.opt:nth-child(1){animation-delay:.02s}.opt:nth-child(2){animation-delay:.06s}
+.opt:nth-child(3){animation-delay:.10s}.opt:nth-child(4){animation-delay:.14s}
+@keyframes optIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.opt:hover{transform:translateY(-1px);border-color:rgba(196,181,253,.48);background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.02))}
+.opt .idx{flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid rgba(196,181,253,.36);font-family:"Noto Serif SC",serif;font-size:12px;color:#C9BEF2;
+  transition:.18s}
+.opt.sel{border-color:rgba(206,190,255,.75);
+  background:linear-gradient(102deg,rgba(106,88,246,.42),rgba(177,92,242,.30));
+  box-shadow:0 0 0 1px rgba(206,190,255,.25),0 14px 34px -16px rgba(124,58,237,.9)}
+.opt.sel .idx{background:#C9BEF2;color:#140C2E;border-color:transparent}
+.qfoot{display:flex;align-items:center;justify-content:space-between;margin-top:28px;gap:12px}
+.qfoot .hint{font-size:12px;color:#7E74A6;letter-spacing:.04em}
+.linkbtn{font-size:13px;color:var(--ink-3);letter-spacing:.06em;padding:8px 2px;transition:.16s}
+.linkbtn:hover{color:#fff}
+.linkbtn[disabled]{opacity:.35;cursor:not-allowed}
+
+/* ---------- 结果页 ---------- */
+.result{padding:clamp(30px,6vh,54px) 24px 80px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.chapter{margin-top:clamp(44px,7vh,64px)}
+.chapter-h{display:flex;align-items:center;gap:12px}
+.chap-no{font-family:"Noto Serif SC",serif;font-size:12px;letter-spacing:.12em;color:var(--cinnabar)}
+.chap-t{font-size:12.5px;letter-spacing:.26em;color:var(--ink-3)}
+.chapter-h i{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+.hero-res{display:grid;grid-template-columns:1fr;gap:26px;margin-top:26px}
+.hero-card{position:relative;padding:26px 24px 24px;border-radius:22px;overflow:hidden;
+  border:1px solid rgba(196,181,253,.26);
+  background:linear-gradient(160deg,rgba(88,101,242,.16),rgba(177,92,242,.12) 55%,rgba(255,255,255,.03));
+  box-shadow:0 30px 70px -40px rgba(90,60,220,.85)}
+.hero-card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.30;
+  background:radial-gradient(600px 300px at 85% -20%,rgba(196,181,253,.55),transparent 70%)}
+.hero-inner{position:relative;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.portrait{width:clamp(126px,30vw,150px);flex:0 0 auto;border-radius:9px;overflow:hidden;
+  background:#E8DEC9;box-shadow:0 0 0 1px rgba(255,255,255,.16),0 20px 44px -18px rgba(12,6,36,.92)}
+.portrait svg{display:block;width:100%;height:auto}
+.pname{display:block;text-align:center;font-family:"Noto Serif SC",serif;font-size:12px;line-height:1.3;
+  letter-spacing:.18em;text-indent:.18em;color:#4A3F2C;background:#DCCFB6;padding:7px 0 8px;
+  border-top:1px solid rgba(74,63,44,.18)}
+.hero-meta{flex:1;min-width:170px}
+.hero-lab{font-size:10.5px;letter-spacing:.24em;color:#A99BD8;margin-bottom:8px}
+.hero-name{font-family:"Noto Serif SC",serif;font-size:clamp(30px,6vw,40px);font-weight:700;line-height:1.15;letter-spacing:.04em}
+.hero-era{font-size:12.5px;color:#B6ABDC;letter-spacing:.10em;margin-top:8px}
+.ring{margin-left:auto;--p:0;position:relative;width:104px;height:104px;flex:0 0 auto;border-radius:50%;
+  display:grid;place-items:center;
+  background:conic-gradient(from -90deg,#8B5CF6 0 calc(var(--p)*1%),rgba(255,255,255,.09) calc(var(--p)*1%) 100%);
+  transition:--p 1s ease}
+.ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#160F33}
+.ring .rv{position:relative;text-align:center;line-height:1.1}
+.ring .rv b{font-family:"Noto Serif SC",serif;font-size:28px;font-weight:600;display:block}
+.ring .rv span{font-size:10.5px;letter-spacing:.14em;color:var(--ink-3)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tag{font-size:12.5px;letter-spacing:.06em;padding:5px 12px;border-radius:999px;
+  border:1px solid rgba(196,181,253,.30);color:#DCD2FA;background:rgba(196,181,253,.10)}
+.portrait-quote{margin-top:20px;font-family:"Noto Serif SC",serif;font-size:15px;color:#D9D1F7;
+  line-height:1.9;padding-left:14px;border-left:2px solid rgba(222,90,64,.55)}
+.slogan-box{position:relative;margin-top:26px;padding:22px 22px 20px;border-radius:16px;
+  border:1px dashed rgba(255,255,255,.20);background:rgba(255,255,255,.045)}
+.slogan-lab{font-size:11px;letter-spacing:.22em;color:#A79CCB}
+.slogan-txt{font-family:"Noto Serif SC",serif;font-size:clamp(19px,3.6vw,23px);line-height:1.7;
+  color:#fff;margin-top:8px;letter-spacing:.02em}
+.copybtn{margin-top:14px;font-size:12px;color:#B8ACDF;letter-spacing:.10em;display:inline-flex;gap:8px;align-items:center;
+  border-bottom:1px solid rgba(184,172,223,.4);padding-bottom:2px}
+.copybtn:hover{color:#fff;border-color:rgba(255,255,255,.7)}
+
+.blk{margin-top:30px}
+.blk h3{font-family:"Noto Serif SC",serif;font-size:16px;font-weight:600;letter-spacing:.04em;
+  color:#E7E0FF;display:flex;align-items:center;gap:9px}
+.blk h3::before{content:"";width:3px;height:13px;border-radius:2px;background:linear-gradient(180deg,#A78BFA,#5B4BE0)}
+.blk p{margin-top:11px;color:#C7BFE6;font-size:14.8px;line-height:2.0;letter-spacing:.015em}
+.blk p strong{color:#F3EEFF;font-weight:500}
+.blk.egg{background:rgba(255,255,255,.045);border-radius:16px;padding:20px 20px 18px;
+  border:1px solid rgba(127,231,218,.18)}
+.blk.egg h3::before{background:linear-gradient(180deg,#8EE7DA,#38BDF8)}
+.blk.egg p{color:#BFE6E2}
+
+.chart-card{margin-top:24px;padding:22px 18px 16px;border-radius:18px;
+  border:1px solid var(--line-soft);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012))}
+.chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 4px}
+.chart-head h4{font-family:"Noto Serif SC",serif;font-size:14.5px;font-weight:600;letter-spacing:.06em;color:#E6DFFF}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--ink-3);letter-spacing:.06em}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.legend .ly{background:linear-gradient(140deg,#8B5CF6,#C084FC)}
+.legend .lt{background:#7FD7E8;opacity:.9}
+.radar-wrap{margin-top:8px;display:flex;justify-content:center}
+.radar-wrap svg{width:100%;max-width:400px;height:auto}
+.topdims{display:grid;gap:8px;margin-top:6px;padding:0 6px}
+.topdim{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#BEB4DD}
+.topdim b{font-family:"Noto Serif SC",serif;font-weight:600;color:#F0EAFF;font-size:13px;width:4.4em}
+.topdim i{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;font-style:normal}
+.topdim i span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#6D5BF6,#C084FC)}
+.topdim em{font-style:normal;font-family:"Noto Serif SC",serif;font-size:12px;color:#9E93C6;width:2.6em;text-align:right}
+
+.cmp{margin-top:20px;display:grid;gap:15px}
+.cmp-row{display:grid;grid-template-columns:62px 1fr 66px;gap:12px;align-items:center}
+.cmp-lab{font-family:"Noto Serif SC",serif;font-size:13px;color:#D6CDF3;letter-spacing:.04em}
+.cmp-bars{display:grid;gap:5px}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;
+  transition:width .9s cubic-bezier(.2,.7,.3,1)}
+.bar.you i{background:linear-gradient(90deg,#7C5CFA,#C084FC)}
+.bar.ta i{background:linear-gradient(90deg,rgba(94,234,212,.55),rgba(56,189,248,.85))}
+.cmp-v{font-family:"Noto Serif SC",serif;font-size:12px;color:#B6AAD8;text-align:right;letter-spacing:.02em}
+.cmp-v span{color:#7FD7E8}
+
+.paras{margin-top:12px;display:grid;gap:26px}
+.para-lab{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.16em;color:#9C92BC}
+.para-lab b{font-family:"Noto Serif SC",serif;color:#DCD1F7;font-size:12.5px;font-weight:500;letter-spacing:.10em}
+.para-lab i{flex:0 0 auto;width:16px;height:1px;background:rgba(196,181,253,.5)}
+.para p{margin-top:10px;color:#C9C1E7;font-size:15px;line-height:2.1;letter-spacing:.015em}
+.para p strong{color:#F2ECFF;font-weight:500}
+
+.sixgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 10px;margin-top:14px}
+.sg{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:8px 11px;border-radius:10px;
+  border:1px solid rgba(167,139,250,.16);background:rgba(255,255,255,.028);min-width:0}
+.sg-n{font-family:"Noto Serif SC",serif;font-size:12px;color:#CFC5EC;letter-spacing:.04em;white-space:nowrap}
+.sg-v{font-family:"Noto Serif SC",serif;font-size:13.5px;color:#EFE7FF;letter-spacing:.01em;white-space:nowrap}
+.sg-v em{font-style:normal;font-size:11px;color:#7FD7E8;opacity:.85}
+.insight{margin-top:14px;font-size:12.8px;color:#A99ECF;line-height:1.95;letter-spacing:.03em}
+.insight b{color:#E6DEFF;font-weight:600}
+
+.risk{margin-top:22px;padding:20px;border-radius:16px;
+  border:1px solid rgba(222,90,64,.30);background:linear-gradient(180deg,rgba(222,90,64,.12),rgba(222,90,64,.03))}
+.risk-lab{font-size:11px;letter-spacing:.22em;color:#F0A48F}
+.risk p{margin-top:10px;color:#F0D8D0;font-size:14.5px;line-height:1.95}
+.advice{margin-top:16px;padding:20px;border-radius:16px;
+  border:1px solid rgba(167,139,250,.32);background:linear-gradient(180deg,rgba(124,92,250,.14),rgba(124,92,250,.03))}
+.advice .risk-lab{color:#C8B6FF}
+.advice p{color:#E0D9FA;margin-top:10px;font-size:14.5px;line-height:1.95}
+
+.quotes{margin-top:22px;display:grid;gap:14px}
+.quote{position:relative;padding:20px 22px;border-radius:14px;background:rgba(255,255,255,.035);
+  border:1px solid var(--line-soft)}
+.quote p{font-family:"Noto Serif SC",serif;font-size:clamp(16px,3.2vw,18px);line-height:1.8;
+  color:#EDE6FF;letter-spacing:.02em}
+.quotes .note{font-size:11.5px;color:#7E74A6;letter-spacing:.03em;line-height:1.8}
+
+.second-line{margin-top:26px;font-size:13px;color:#A99ECF;letter-spacing:.04em;line-height:1.9;
+  padding:14px 16px;border-radius:12px;border:1px dashed rgba(167,139,250,.22)}
+.second-line b{color:#E6DEFF;font-weight:600}
+
+.actions{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.actions .btn{padding:14px 26px}
+.footnote{margin-top:30px;text-align:center;font-size:11.5px;color:#6F669A;letter-spacing:.05em;line-height:2}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,14px);z-index:40;
+  padding:11px 20px;border-radius:999px;font-size:13px;letter-spacing:.06em;color:#fff;
+  background:rgba(30,20,64,.92);border:1px solid rgba(196,181,253,.35);
+  box-shadow:0 16px 40px -18px rgba(0,0,0,.8);opacity:0;pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 响应式 ---------- */
+@media (min-width:720px){
+  .hero-res{grid-template-columns:minmax(0,1fr)}
+  .hero-inner{flex-wrap:nowrap}
+  .hero-card{padding:30px 30px 28px}
+  .rowline{grid-template-columns:104px 1fr;gap:18px;align-items:baseline;padding:22px 0}
+  .rowline:first-child{padding-top:8px}
+  .cmp-row{grid-template-columns:74px 1fr 78px;gap:16px}
+  .intro-foot{margin-top:26px}
+}
+@media (max-width:560px){
+  .portrait{width:96px}
+  .hero-card{padding:22px 20px 20px}
+  .hero-inner{gap:14px}
+  .ring{width:84px;height:84px}
+  .ring .rv b{font-size:22px}
+  .hero-meta{min-width:104px}
+}
+@media (max-width:420px){
+  .wrap{padding:0 18px}
+  .opt{padding:14px 15px;font-size:14.5px;gap:11px}
+  .cmp-row{grid-template-columns:54px 1fr 58px;gap:9px}
+  .ring{width:92px;height:92px}
+  .ring .rv b{font-size:24px}
+  .startbox{gap:12px}
+  .seg button{padding:8px 14px;font-size:12.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-delay:0ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main id="app">
+  <!-- ===== 启动页 ===== -->
+  <section class="screen on" id="screenIntro">
+    <div class="wrap intro">
+      <div class="kicker">
+        <span class="sealmark"><b>测</b>性格考古</span>
+        <span class="pill">生活情境 · 30 题</span>
+      </div>
+      <h1 class="h1">测一测<br>你最像哪位<span style="white-space:nowrap">中国历史人物</span>
+        <span class="thin">从真实的情景中做选择，找到你的性格底色</span>
+      </h1>
+      <p class="sub">没有人问你喜不喜欢历史，也没有标准答案。三十道生活里的小事——周五晚上、地铁上、群聊里、饭桌最后一块肉——只看你<strong>下意识怎么选</strong>，再把你和一位古人放在同一张桌上。</p>
+
+      <div class="avatars" id="introAvatars"></div>
+      <div class="metas">
+        <span class="pill">行为模式</span>
+        <span class="pill">性格结构</span>
+        <span class="pill">人格映射</span>
+        <span class="pill">结果解读</span>
+      </div>
+
+      <div class="startbox">
+        <div class="seg" id="sexSeg" role="group" aria-label="选择原型性别">
+          <button type="button" data-sex="all" aria-pressed="true">都可以</button>
+          <button type="button" data-sex="m" aria-pressed="false">男性原型</button>
+          <button type="button" data-sex="f" aria-pressed="false">女性原型</button>
+        </div>
+        <button class="btn" id="startBtn" type="button">开始测试</button>
+      </div>
+      <p class="intro-foot">30 道题 · 约 4 分钟 · 一份八维历史原型报告 · 答完立刻出结果，可反复重测</p>
+    </div>
+  </section>
+
+  <!-- ===== 答题页 ===== -->
+  <section class="screen" id="screenQuiz">
+    <div class="wrap quiz">
+      <div class="qhead">
+        <div class="qhead-row">
+          <button class="linkbtn" id="homeBtn" type="button">← 返回首页</button>
+          <span class="qcount"><b id="qNow">01</b> / 30</span>
+        </div>
+        <div class="pbar"><i id="pBar"></i></div>
+      </div>
+      <div id="qMount"></div>
+    </div>
+  </section>
+
+  <!-- ===== 结果页 ===== -->
+  <section class="screen" id="screenResult">
+    <div class="wrap result" id="resultRoot"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   一、题库
+   ========================================================= */
+const QUESTIONS = [
+  {q:'周五晚上十点，朋友突然喊你出门。', o:[
+    {t:'鞋都穿好了，走', w:{k:2,l:1}},
+    {t:'先问清楚都有谁、去哪、几点回', w:{y:2,d:1}},
+    {t:'嘴上说不去，半小时后出现在店里', w:{g:2,k:1}},
+    {t:'真不去，今晚我另有安排', w:{j:2,l:1}}]},
+  {q:'一桌菜上齐，你的筷子先伸向', o:[
+    {t:'最中间那道硬菜', w:{j:2,k:1}},
+    {t:'先给旁边的人夹一筷', w:{g:2,z:1}},
+    {t:'看谁吃得最香，我跟哪个', w:{d:2,g:1}},
+    {t:'先尝一口，判断这顿值不值', w:{y:2,d:1}}]},
+  {q:'一件谁都不想接的活，落到你面前。', o:[
+    {t:'接下来，边做边学', w:{k:2,z:1}},
+    {t:'先把人手、资源、deadline 问清楚', w:{y:2,j:1}},
+    {t:'我接，但丑话说在前头', w:{j:2,b:1}},
+    {t:'先想清楚这事到底值不值得做', w:{d:2,l:1}}]},
+  {q:'群里有人发了句阴阳怪气的话，像在说你。', o:[
+    {t:'直接问：哪句让你不舒服', w:{j:2,b:1}},
+    {t:'打个圆场，把话题岔开', w:{g:2,y:1}},
+    {t:'不回，心里已经把这人归了类', w:{d:2,l:1}},
+    {t:'私聊他，先弄清发生了什么', w:{g:2,d:1}}]},
+  {q:'你手机相册里最多的是', o:[
+    {t:'天空、云、路边奇怪的东西', w:{d:2,k:1}},
+    {t:'和朋友家人的合照', w:{g:2,b:1}},
+    {t:'自己做的饭、手工、作品', w:{k:2,y:1}},
+    {t:'截屏：灵感、清单、待办', w:{y:2,d:1}}]},
+  {q:'地铁上被踩了一脚，对方没道歉。', o:[
+    {t:'看他一眼，等他先开口', w:{j:2,d:1}},
+    {t:'算了，谁都有赶时间的时候', w:{g:2,z:1}},
+    {t:'直接说：你踩到我了', w:{b:2,j:1}},
+    {t:'往旁边挪半步，事情结束', w:{l:2,y:1}}]},
+  {q:'出发前一天，目的地来了台风。', o:[
+    {t:'当天改路线，备选方案早想过了', w:{j:2,y:1}},
+    {t:'走不了就原地玩，雨里也有意思', w:{k:2,g:1}},
+    {t:'先把票、酒店、退改一条条对齐', w:{y:2,d:1}},
+    {t:'有点扫兴，更想找人一起吐槽', w:{b:2,g:1}}]},
+  {q:'一个团队里，你默认是那个', o:[
+    {t:'拍板的人', w:{j:2,z:1}},
+    {t:'记得每个人状态的人', w:{g:2,d:1}},
+    {t:'想新玩法的人', w:{k:2,b:1}},
+    {t:'盯进度、算成本的人', w:{y:2,z:1}}]},
+  {q:'忽然被推上台讲两句。', o:[
+    {t:'接过来就讲，讲完再说', w:{j:2,b:1}},
+    {t:'先抛个笑话把场子热起来', w:{b:2,k:1}},
+    {t:'三句话讲完重点，下台', w:{y:2,d:1}},
+    {t:'手心出汗，但还是讲完了', w:{z:2,j:1}}]},
+  {q:'深夜刷到一个陌生城市的视频。', o:[
+    {t:'收藏，想着总有一天要去', w:{k:2,l:1}},
+    {t:'顺手查了机票和那几天天气', w:{y:2,j:1}},
+    {t:'翻评论，看当地人在说什么', w:{d:2,g:1}},
+    {t:'转发给那个会跟我一起去的人', w:{g:2,b:1}}]},
+  {q:'你的成果，被人说是他的。', o:[
+    {t:'当场把过程讲清楚', w:{j:2,b:1}},
+    {t:'不吵，把证据发到该发的地方', w:{d:2,y:1}},
+    {t:'先私下问他到底怎么想的', w:{g:2,d:1}},
+    {t:'算了，下次我留痕', w:{l:2,y:1}}]},
+  {q:'你更想住进', o:[
+    {t:'一个人也能活得很好的小屋', w:{l:2,d:1}},
+    {t:'随时有人来串门的房子', w:{g:2,b:1}},
+    {t:'有点旧、但有很多故事的地方', w:{d:2,b:1}},
+    {t:'能自己改造、越住越像自己的', w:{k:2,y:1}}]},
+  {q:'第一次见一个人，你先注意到', o:[
+    {t:'他说话时手在做什么', w:{d:2,g:1}},
+    {t:'他穿什么、用什么', w:{y:2,d:1}},
+    {t:'他开口的第一句话', w:{b:2,d:1}},
+    {t:'他让你觉得舒服还是紧绷', w:{g:2,l:1}}]},
+  {q:'周五下班前，领导丢来一句「周一再说」。', o:[
+    {t:'周末先把框架想好', w:{z:2,y:1}},
+    {t:'周一早上再动，周末是我的', w:{l:2,j:1}},
+    {t:'先问清楚到底要做到什么程度', w:{d:2,y:1}},
+    {t:'当天就做完，图个清净', w:{j:2,z:1}}]},
+  {q:'心事你更愿意告诉', o:[
+    {t:'一个认识很久的人', w:{g:2,z:1}},
+    {t:'一个不熟但很会听的人', w:{g:2,d:1}},
+    {t:'写下来，谁都不知道', w:{l:2,b:1}},
+    {t:'谁都不说，自己消化', w:{l:2,j:1}}]},
+  {q:'排了半小时队，有人直接插到前面。', o:[
+    {t:'直接说：队尾在后面', w:{j:2,b:1}},
+    {t:'先看工作人员管不管', w:{d:2,y:1}},
+    {t:'算了，我不缺这点时间', w:{g:2,l:1}},
+    {t:'拍张照，发群里吐槽', w:{b:2,k:1}}]},
+  {q:'一件你从没做过的事，交给你。', o:[
+    {t:'先接下来，缺什么补什么', w:{z:2,k:1}},
+    {t:'先做个最小版本试水', w:{k:2,d:1}},
+    {t:'把能想到的坑先列一遍', w:{d:2,y:1}},
+    {t:'找做过的人聊半小时', w:{y:2,g:1}}]},
+  {q:'朋友讲了个你没听懂的梗。', o:[
+    {t:'笑，然后问「什么意思」', w:{b:2,g:1}},
+    {t:'跟着笑，回头自己查', w:{d:2,l:1}},
+    {t:'当场把它接过去，讲得更好笑', w:{b:2,k:1}},
+    {t:'直接说没听懂，让他重讲', w:{j:2,b:1}}]},
+  {q:'旅行时你更想', o:[
+    {t:'走到没有路的地方看看', w:{k:2,l:1}},
+    {t:'在老街坐一下午，什么都不干', w:{d:2,b:1}},
+    {t:'和当地人吃顿饭、聊几句', w:{g:2,b:1}},
+    {t:'行程排满，一天看五个点', w:{y:2,j:1}}]},
+  {q:'做到一半，发现方向错了。', o:[
+    {t:'立刻停，先算清要赔多少', w:{j:2,y:1}},
+    {t:'先问最初要的是什么，再定新方向', w:{d:2,j:1}},
+    {t:'换条路继续做，反正都到这了', w:{k:2,z:1}},
+    {t:'告诉相关的人，一起决定', w:{z:2,g:1}}]},
+  {q:'有人夸你「你人真好」。', o:[
+    {t:'「也没有啦」，有点不好意思', w:{g:2,l:1}},
+    {t:'「谢谢，我今天确实很努力」', w:{b:2,j:1}},
+    {t:'「你怎么看出来的」', w:{d:2,g:1}},
+    {t:'「那你可别欺负我」', w:{b:2,k:1}}]},
+  {q:'选一家餐厅，你主要靠', o:[
+    {t:'评分和人均', w:{y:2,d:1}},
+    {t:'朋友推荐', w:{g:2,z:1}},
+    {t:'路过觉得有意思就进', w:{k:2,l:1}},
+    {t:'想吃哪一口，直接定', w:{j:2,y:1}}]},
+  {q:'一场全是陌生人的聚会。', o:[
+    {t:'先找一个能聊的，聊到底', w:{g:2,z:1}},
+    {t:'在角落看一圈再决定', w:{d:2,l:1}},
+    {t:'主动认识三个人', w:{k:2,b:1}},
+    {t:'有事说事，说完就走', w:{y:2,l:1}}]},
+  {q:'朋友上次借的钱还没还，又开口了。', o:[
+    {t:'直接说：上次的还没清', w:{j:2,b:1}},
+    {t:'借，但把话说清楚', w:{g:2,y:1}},
+    {t:'找个理由推掉，关系还在', w:{y:2,d:1}},
+    {t:'先问他最近是不是出事了', w:{g:2,d:1}}]},
+  {q:'忽然空出一整天。', o:[
+    {t:'列个清单，把攒的事清掉', w:{y:2,z:1}},
+    {t:'出门，去哪都行', w:{k:2,l:1}},
+    {t:'见一个很久没见的人', w:{g:2,b:1}},
+    {t:'什么都不做，睡到自然醒', w:{l:2,d:1}}]},
+  {q:'你会为了什么熬夜', o:[
+    {t:'一个想不明白的问题', w:{d:2,l:1}},
+    {t:'一个还没做完的作品', w:{k:2,z:1}},
+    {t:'跟人聊天，聊到没话说', w:{g:2,b:1}},
+    {t:'把明天的活先干完', w:{y:2,z:1}}]},
+  {q:'别人给你提意见。', o:[
+    {t:'先问他具体看到了什么', w:{d:2,g:1}},
+    {t:'听完就改，改完再说', w:{z:2,j:1}},
+    {t:'心里不服，但会想一整晚', w:{l:2,d:1}},
+    {t:'当场把我的理由讲清楚', w:{b:2,j:1}}]},
+  {q:'如果人生能「存档重来」一次。', o:[
+    {t:'改一个当时不敢做的决定', w:{k:2,j:1}},
+    {t:'把一段关系重新走一遍', w:{g:2,z:1}},
+    {t:'回到某个下午，什么都不改', w:{d:2,b:1}},
+    {t:'不改，我想看看重来一次会怎样', w:{j:2,l:1}}]},
+  {q:'判断一件事，你最先靠', o:[
+    {t:'直觉，说不上来但很准', w:{d:2,j:1}},
+    {t:'数据、先例、别人怎么做', w:{y:2,d:1}},
+    {t:'当事人的表情和语气', w:{g:2,d:1}},
+    {t:'这事到底该不该做', w:{z:2,j:1}}]},
+  {q:'回头看，你最想留住的是', o:[
+    {t:'一次说走就走', w:{k:2,l:1}},
+    {t:'一次扛下来的事', w:{z:2,j:1}},
+    {t:'一次被读懂的瞬间', w:{g:2,d:1}},
+    {t:'一次说服了所有人', w:{b:2,j:1}}]},
+];
+
+/* =========================================================
+   二、人物库
+   ========================================================= */
+const FIGS = [
+  {id:'sushi', name:'苏轼', sex:'m', era:'北宋 · 文坛顶流 / 资深被贬选手',
+   tag:['乐天派','人间清醒','厨房实验家'],
+   self:'一个把贬谪路走成美食地图的人。',
+   dims:{j:78,g:92,k:85,d:88,b:95,y:60,l:82,z:70},
+   av:{h:'scholar',b:1,r:'#3F6E8C',p:'gourd'},
+   slogan:'生活把我按在地上，我顺便做了道菜。',
+   why:'你和他像的地方不是才华，是那股「难过归难过，饭还是要好好吃」的劲儿。你对世界的好奇大于对输赢的执念，所以别人记住的是你的松弛——其实那是你自己一寸一寸修出来的。',
+   egg:'隐藏技能：情绪修复极快。别人 emo 三天，你 emo 一顿夜宵就重启了。',
+   mode: ['你和苏轼的共同底色，是把生活当成一道可以重新调味的菜。别人遇到坏消息先问「为什么是我」，你先问「那现在还能怎么办」。这种把处境当材料的习惯，让你在别人发慌的时候显得格外松弛。它不是天生好脾气，而是你很早就学会把情绪和事情分开放：难过归难过，饭还是要好好吃。所以你能在最难看的局面里找出一件小事来做好，也常常因此被误认为没心没肺。', '现实里，你常常是那个把气氛救回来的人。饭桌冷场你先起话头，同事把事情搞砸你先想怎么补，而不是先追究谁的责任。你的好相处不是没脾气，是你算过账：这点争执，不值得用掉一整晚的好心情。也正因为你退得快，很多本来该由别人道歉的事，最后都被你笑着带过去了。你不计较，但那些没说清的部分会在心里留一层薄薄的渣，等某个安静的时候自己浮上来。', '最近你大概正把某件不满意的事说成「算了」。说的时候语气很轻，夜里却会重新过一遍细节。你不是真的放下了，你只是还没找到既能表达不满、又不把关系弄僵的那种说法。你在等一个不尴尬的时机，可这种事往往没有不尴尬的时机，越等，它在你心里就越像一根拔不掉的刺。'],
+   read: ['值得留意的是，太会自我消化，会让身边人误以为你不需要被照顾。乐观一旦变成默认设置，该谈的问题就容易被拖成旧账；你对世界宽容，对自己也宽容，于是有些事一直没被认真处理，包括你真正想要什么。更隐蔽的代价是，别人会把你的体谅当成理所当然，等你真的需要帮忙时，反而开不了口。', '挑一件你其实很在意的事，把它完整地说一次，不打包、不玩笑、也不用「其实也没关系」收尾。你会发现，直接表达并不会毁掉你的好人缘，反而会让关系更结实。真正在意你的人，宁愿被你麻烦一次，也不想看你一个人消化到最后，变得客气又疏远。'],
+   lines:['一蓑烟雨任平生','也无风雨也无晴','人间有味是清欢']},
+
+  {id:'libai', name:'李白', sex:'m', era:'唐 · 诗人 / 终身旅行家',
+   tag:['自由意志','灵感体质','说走就走'],
+   self:'一个把人生当长途旅行的人，行李越少越好。',
+   dims:{j:82,g:70,k:98,d:72,b:96,y:45,l:96,z:55},
+   av:{h:'bun',b:2,r:'#D9C7A0',p:'sword'},
+   slogan:'我认真起来很强，只是我很少认真。',
+   why:'你的底色是「不甘心被安排」。别人在算这条路稳不稳，你先想的是这条路好不好玩。你不是不能坚持，是很难对一件不让你发光的事坚持。',
+   egg:'情绪浓度极高：高兴能飞到天上，低落也落得很深，但你恢复得快，像天气。',
+   mode: ['你和李白相同的底色，是不甘心被安排。别人在算这条路稳不稳，你先想这条路好不好玩。你不是不能坚持，是很难对一件不让你发光的事长期坚持，这也是你换方向特别快的原因。你对「闷」的耐受度极低，一进那种一眼能看到三年后的日子，你就会本能地想走开。所以你的路通常是跳跃的，故事却比同龄人多得多。', '现实里，你常常是场子里最先起头的那个人，一句话就能把气氛点着；也常常是第二天最早消失的那个。你把「体验」排在「完成」前面，所以生活密度很高，但收尾的部分总要有人替你补。你不是不在乎那些人，你只是很容易被下一个更亮的东西带走；等你想起来回头，场面已经散了，你也不太知道该怎么接上。', '你现在可能卡在两个选项之间：一个体面，一个心动。你嘴上说在权衡，其实心里早有答案，只是在等一个能说服自己承担后果的理由。你也清楚，如果这次再选体面，那种「我本来可以」的念头会跟着你很多年，在每次疲惫的时候冒出来。'],
+   read: ['你的风险在于开局爆发力极强、收尾容易松：想法说得漂亮，后续跟进常靠记性。自由过了头，会让人觉得你不靠谱；而你对「被管」的抗拒，有时也会误伤真正关心你的人。更麻烦的是，你很容易把「我还没准备好」当成不去开始的借口，一拖就拖成遗憾。', '给你的热爱配一副续航：选一件小事，做到有人能验收的程度。做完一件，比再开三个新坑更能证明你，也更能让你自己安心。别人记住的从来不是你开过多少个头，而是你有没有完整地交出过一件东西。'],
+   lines:['天生我材必有用','长风破浪会有时','仰天大笑出门去']},
+
+  {id:'dufu', name:'杜甫', sex:'m', era:'唐 · 诗人 / 人间记录员',
+   tag:['共情过载','责任感','老实人'],
+   self:'一个把别人的苦也背在身上的人。',
+   dims:{j:55,g:96,k:60,d:88,b:84,y:40,l:65,z:92},
+   av:{h:'scholar',b:2,r:'#6B6F8A',p:'scroll'},
+   slogan:'我没什么大本事，就是见不得别人难过。',
+   why:'你的共情是身体性的——别人说没事，你看一眼就知道有没有事。你不太会拒绝，也不太会邀功，所以你常常做最多的事、拿最少的分。',
+   egg:'你的眼泪阈值很低，但你都偷偷处理，从不现场掉。',
+   mode: ['你和杜甫的共同底色，是对他人的处境有近乎本能的在意。别人说「没事」，你看一眼就知道有没有事。你不太会拒绝，也不太会邀功，所以你常常做最多的事、拿最少的分。这种敏感不是软弱，你只是很难在看见别人的难处之后，装作没看见地走开。哪怕那个人跟你并不熟，你也会在心里替他多想两句。', '现实里，你习惯把最重的那部分往自己身上挪。聚餐你负责照顾所有人，散场你负责最后走，出事你负责先顶上。你很少说「我不方便」，因为那句话在你心里比干活还难开口。时间久了，你甚至养成一种奇怪的安慰方式：只要别人舒服了，你就默认自己也没事，好像累是可以补发的，委屈是可以过期的。', '最近你有点累，是那种说不上哪里累的累。不是事太多，是你已经很久没有过一个不用撑着、也不用回消息的下午了。你还在照常回每一句「在吗」，只是回完之后会对着屏幕多停几秒，然后告诉自己，等这阵子忙完就好了。'],
+   read: ['长期把别人的情绪排在前面，会养成委屈也不说的习惯；帮得太多，反而容易被当成理所当然。你的共情很珍贵，但它需要边界，否则你会先被自己耗空。还有一种更轻的损耗：你替所有人考虑，于是没有人需要替你考虑，连你自己都慢慢忘了该怎么提要求。', '练习一句「这次我不方便」，说的时候不必解释三遍。你不欠任何人一份随时待命；真正的善良，是能长期供应的那一种。把要帮的人排少一点，你会发现剩下那些关系反而更干净，也更愿意反过来接住你。'],
+   lines:['安得广厦千万间','烽火连三月，家书抵万金','会当凌绝顶，一览众山小']},
+
+  {id:'caocao', name:'曹操', sex:'m', era:'东汉末 · 政治家 / 实干派',
+   tag:['目标感','执行力','不怕背锅'],
+   self:'一个先把事做成、再解释的人。',
+   dims:{j:96,g:55,k:90,d:88,b:82,y:92,l:85,z:80},
+   av:{h:'crown',b:2,r:'#4A2F6B',p:'seal'},
+   slogan:'我不太会讨人喜欢，但我能把事办成。',
+   why:'你和他的相似点在「结果导向」：你不太在乎过程好不好看，在乎事情有没有往前走。你能在信息不全的时候做决定，这个能力很稀缺，也很孤独。',
+   egg:'你嘴上说「随便」，其实每个细节都有预案。',
+   mode: ['你和曹操的相似点在结果导向：不太在乎过程好不好看，在乎事情有没有往前走。你能在信息不全的时候做决定，这个能力很稀缺，也很孤独，因为拍板的人永远比执行的人少。你不怕被误解，你怕的是事情停在原地等一个完美的方案。只要方向对，你愿意先上路，边走边修。', '现实里，会开到一半别人还在铺垫，你已经把结论摆上桌；关键时刻你愿意背锅，也愿意为结果得罪人。你不擅长哄人，但你会在真正要塌的时候把人保住，这一点身边的人心里有数。只是你的耐心有限，对反复解释同一件事会有明显的不耐烦，那种不耐烦藏不住，别人看一眼就懂。', '你正处在想再往上走一步的阶段。手上这些事都能转，只是还没找到那个值得你把全部压上去的方向，所以最近常有使不上劲的空转感。你不太愿意承认这种空转，宁可先多接两件小事把时间填满，也不肯让自己看起来在等。'],
+   read: ['效率优先的时候，你容易忽略人的感受，被误读成冷；也容易把「我能扛」慢慢变成「都我来」，最后累的是你，怨的也是你。你的果断在顺境里是优势，在人心浮动时可能变成压力。你越是想快点把事推过去，越容易把没说完的话留成隔阂。', '每次拍板前多花三十秒，问一句「还有谁会被影响」，并且真的把这句问出口。你不需要变得更软，只需要让别人确认自己没有被当成工具；一句多说的解释，往往能省掉后面三次返工。'],
+   lines:['老骥伏枥，志在千里','山不厌高，海不厌深','青青子衿，悠悠我心']},
+
+  {id:'zhugeliang', name:'诸葛亮', sex:'m', era:'三国 · 谋士 / 全能管家',
+   tag:['结构化大脑','操心命','兜底的人'],
+   self:'一个把所有人的事都写进自己日程表的人。',
+   dims:{j:88,g:74,k:78,d:96,b:76,y:90,l:70,z:95},
+   av:{h:'scholar',b:1,r:'#E4DCC8',p:'fan'},
+   slogan:'我不是聪明，我是把每种可能都想过一遍。',
+   why:'你和他一样，靠「提前想到」获得安全感。别人看到你的从容，看不到你在心里演过多少遍最坏的情况。你不太求助，因为你觉得解释成本太高。',
+   egg:'你有一个只有自己知道的后备方案库，连旅行都备两套。',
+   mode: ['你和诸葛亮一样，靠提前想到来获得安全感。别人看到的是你的从容，看不到你在心里演过多少遍最坏的情况。你不太求助，因为你觉得解释一遍的成本，比自己做完还高。你脑子里常备三套方案，连别人可能问的问题都提前想好了答案，于是你看起来总是反应很快，其实只是准备得很久。', '现实里，你常常是最后兜底的那个人：事情顺利时没人记得你，事情出岔子时所有人找你。你把标准守得很紧，也顺手把别人的责任接了过来，于是你越来越忙，别人越来越闲。你不是不会分工，是看着别人做得慢，忍不住自己上手，然后一边上手一边心疼那半天的时间。', '你在超负荷运转，但嘴上还在说「没事我可以」。你缺的从来不是能力，是把一部分事交出去、并且允许别人做得没你好的那种底气。你也隐约知道，一旦真放手，有些事就真的会以八十分交出去，而那八十分里，恰好有你在意的部分。'],
+   read: ['过度负责会养出依赖：你替别人做三次，第四次他就默认该你做。什么都自己扛，也迟早会有一次撑不住，而那次往往发生在最关键的时候。你越想保证不出错，越容易成为唯一那个不能出错的人，而这本身就是最大的风险。', '把「我来」换成「你来，我看」。教别人一次，比替他做十次划算；允许事情以八十分完成，你才腾得出手去做那件只有你能做的事。你不是在放弃标准，你是在把标准用在更值得的地方。'],
+   lines:['鞠躬尽瘁，死而后已','静以修身，俭以养德','非淡泊无以明志，非宁静无以致远']},
+
+  {id:'wangyangming', name:'王阳明', sex:'m', era:'明 · 思想家 / 实战派',
+   tag:['知行合一','内驱力','不内耗'],
+   self:'一个先把自己搞明白、再去搞定世界的人。',
+   dims:{j:84,g:82,k:92,d:96,b:80,y:62,l:88,z:88},
+   av:{h:'scholar',b:1,r:'#3B4E7A',p:'brush'},
+   slogan:'想不通的事，我不硬想，我去做。',
+   why:'你的特别之处是「不内耗」——不是没有情绪，是情绪来了也不耽误行动。你相信答案在现场不在脑子里，所以别人还在讨论，你已经出发。',
+   egg:'你有一种很稳的自我校准能力：错一次就改，不改第二次。',
+   mode: ['你和王阳明的共同点是知行合一：情绪来了不耽误行动，想不通就先去现场。你相信答案在做事的过程里，而不是在脑子里反复推演，所以别人还在讨论，你已经出门了。你对「想清楚再动」这套说法没什么耐心，因为你看过太多想得很清楚却始终没动的人，也吃过犹豫的亏。', '现实里，你是那种说着说着就站起来的人。别人以为你冲动，其实你心里已经走过一遍；你不太需要别人批准才行动，代价是偶尔会跑得比队伍快半步。你不喜欢开会超过半小时，也觉得反复确认是一种浪费，只是这种干脆落在慢节奏的人身上，会有点像催促。', '你正卡在一个「知道该做、但还没动手」的关口。缺的不是方法，是一个开始的理由，或者是一个允许自己失败的许可。你甚至已经把第一步想好了，连第一步之后的两步都想好了，只是还没让自己真的迈出去。'],
+   read: ['太相信自己的判断，会让你听不进慢一点的建议；对自己要求高，也容易顺手把同一套标准套到别人身上。你的笃定在顺的时候是光，在逆的时候可能是封闭。你越确信自己是对的，越容易错过那个本来能提醒你的人。', '给自己留一点「不必立刻想通」的时间，有些答案是走一段路才长出来的。也给身边人留一句「你怎么看」，那不会削弱你的判断，只会增加你的选项。真正稳的人，不怕被补充。'],
+   lines:['知行合一','破山中贼易，破心中贼难','此心光明，亦复何言']},
+
+  {id:'liubang', name:'刘邦', sex:'m', era:'秦末汉初 · 开国皇帝',
+   tag:['会用人','越挫越勇','不拘小节'],
+   self:'一个自己不算最强，却能把最强的人凑到一块的人。',
+   dims:{j:92,g:80,k:86,d:78,b:74,y:88,l:60,z:82},
+   av:{h:'crown',b:2,r:'#6B3E2E',p:'sword'},
+   slogan:'我打不过你，但我能找来打得过你的人。',
+   why:'你的核心能力不是「最能干」，而是「最会让别人愿意帮你」。你看人很准，也放得下身段，这在很多人身上是稀缺的。',
+   egg:'你的「没事」背后通常已经有主意了，只是不想现在说。',
+   mode: ['你和刘邦的核心能力不是「最能干」，而是「最能让别人愿意帮你」。你看人很准，也放得下身段，这两件事同时具备的人很少，因为它们要求你既自信，又不那么在乎面子。你心里有一张很实际的名册，谁擅长什么、谁会在什么环节掉链子，你都记得，而且不太说出口。', '现实里，你擅长在混乱里把人心拢住。别人争功劳的时候，你先想这摊子接下来怎么走；你也愿意在关键时刻把位置让给更合适的人，这让跟着你的人觉得有奔头。你不太纠结谁对谁错，更在意这件事还能不能往下做，所以你能在别人还在生气的时候先把局面稳住。', '你正处在重新组队的时期：旧的搭子散了，新的人还没磨合好。你嘴上说都行，其实心里在默默给每个人打分。你知道谁只是暂时的过客，也清楚自己还没有真正能托底的那一位，所以这段时间你比平时更愿意自己先扛一段。'],
+   read: ['太会借力，容易在关键节点依赖别人；不拘小节久了，会让人觉得你不靠谱。你还有一种隐藏成本：因为太会用人，身边的人常不知道自己被你放在什么位置，久了就会有人心里不平，而你往往最后一个察觉。', '把「谁会帮我」换成「我能给别人什么」。关系是双向的，别只在需要时出现；也把感谢说得具体一点，那是成本最低、回报最高的一笔投入。你不需要变得细致，只需要让帮你的人知道自己被看见了。'],
+   lines:['大风起兮云飞扬','威加海内兮归故乡','安得猛士兮守四方']},
+
+  {id:'lishimin', name:'李世民', sex:'m', era:'唐 · 皇帝 / 少年统帅',
+   tag:['大格局','听得进话','能扛事'],
+   self:'一个把「被指出错误」当成日常训练的人。',
+   dims:{j:94,g:72,k:90,d:86,b:70,y:88,l:75,z:90},
+   av:{h:'crown',b:1,r:'#3B5B8C',p:'seal'},
+   slogan:'我不怕你说我不对，我怕没人敢说。',
+   why:'你身上有一种「装得下不同意见」的气度。你不一定脾气好，但你知道什么对事有用。你能在压力下保持清醒，这是很多人练不出来的。',
+   egg:'你真正的软肋是「怕辜负」——怕对不起跟着你的人。',
+   mode: ['你和李世民身上有一种装得下不同意见的气度。你不一定脾气好，但你知道什么对事有用。你能在压力下保持清醒，不是因为没有情绪，而是因为关键时刻你能把情绪让位给判断。你听得进难听的话，也分辨得出哪些难听是真问题、哪些只是别人在借题发挥。', '现实里，你在团队中像定海神针：不抢话，但一开口大家就安静。你愿意听难听的话，也愿意为判断承担后果，这让别人愿意把真话告诉你，这在成年人的世界里非常少见。你的威慑从来不在音量，而在你说过的话都能兑现，所以你的沉默比别人的强调更有分量。', '你正处在从「自己冲」到「带人冲」的转折点。你还在适应不必每件事都亲自上，也在学着接受别人做得不如你，但方向是对的。你偶尔还是会忍不住下场，做完之后又提醒自己退回来，这个过程比想象中更耗神。'],
+   read: ['要求高又习惯自己扛，容易把身边人养成执行者而不是伙伴；强势的时候，你也可能听不进软话，把「我这是为你好」当成不必解释的理由。你越是把责任揽在自己身上，别人越没有机会长成能和你并肩的人。', '把「我来定」偶尔换成「你怎么看」，并且真的等对方说完。你缺的从来不是判断力，是更多愿意和你一起扛的人。让别人参与决定，是成本最低的忠诚投资。'],
+   lines:['以铜为镜，可以正衣冠','水能载舟，亦能覆舟','疾风知劲草，板荡识诚臣']},
+
+  {id:'xinqiji', name:'辛弃疾', sex:'m', era:'南宋 · 词人 / 将领',
+   tag:['热血未冷','文武双修','憋着一口气'],
+   self:'一个把刀和笔都磨得很亮的人。',
+   dims:{j:90,g:86,k:82,d:80,b:90,y:58,l:76,z:94},
+   av:{h:'helmet',b:1,r:'#6B2E3A',p:'sword'},
+   slogan:'我写词不是因为闲，是因为有些话没处说。',
+   why:'你和他的共同点是「不服」。你不太会把不甘心挂在嘴上，但你会把它变成行动——多练一点，多做一点，多撑一会儿。',
+   egg:'你表面最会开玩笑，心里最较真。',
+   mode: ['你和辛弃疾的共同点是「不服」。你不太把不甘心挂在嘴上，但你会把它变成行动：多练一点，多做一点，多撑一会儿。你的努力里有一层别人看不见的赌气，你在跟一个不在场的人较劲，可能是某个否定过你的人，也可能是那个曾经放弃过的自己。', '现实里，你在别人眼中「有才又好玩」，只有你自己知道，你在拿兴趣抵住某种焦虑。你开会时最会缓和气氛，散会后又最较真地复盘每一句话，想自己刚才是不是又说多了、是不是又被人看轻了。你不太需要别人夸，你需要的是有人认真对待你说的话。', '你有一段被搁置的热情，还在心里亮着。你嘴上说「随便」，其实一直在等一个能把它用上的机会，甚至已经悄悄准备好了。你怕的不是失败，是把它拿出来之后被人轻慢地评价一句，所以宁可先藏着。'],
+   read: ['憋太久容易一次性爆发，伤人伤己；对自己狠，也容易对身边人失望。你把标准定得很高，于是很多本来不错的东西，在你眼里都差一口气。这股劲让你走得比多数人远，也让你比别人更难感到满足。', '把那句「我本来可以」换成「我现在就开始」。你不用等到被谁看见才值得；先用一件小事，把那口气顺出来，哪怕做得不完美。你先给自己一次完成的经验，比再攒十次准备都有用。'],
+   lines:['醉里挑灯看剑','了却君王天下事，赢得生前身后名','蓦然回首，那人却在，灯火阑珊处']},
+
+  {id:'yuefei', name:'岳飞', sex:'m', era:'南宋 · 将领',
+   tag:['硬骨头','纪律感','说到做到'],
+   self:'一个把自己要求得比别人更狠的人。',
+   dims:{j:90,g:80,k:68,d:74,b:70,y:55,l:78,z:98},
+   av:{h:'helmet',b:0,r:'#8C3B3B',p:'sword'},
+   slogan:'我说到的事就会做到；做不到的，我不会说。',
+   why:'你的底色是「信」。你答应的事会记很久，你也会因为别人不守约而难受很久。你的可靠不是性格，是选择。',
+   egg:'你对「公平」的敏感度远超常人，看到不公你是真的会睡不着。',
+   mode: ['你的底色是「信」。答应的事会记很久，别人不守约你也会难受很久。你的可靠不是性格，是选择：你清楚守信的成本，最后还是选了守信。你不太擅长给自己找台阶，也很少在事后把承诺重新解释一遍，因为在你看来，那等于把话说轻了。', '现实里，你是那个「交给他就放心」的人。别人靠情绪推动，你靠标准推动；你不会临时改口，也不会为了好看把话说满，所以你的承诺在团队里是有重量的。代价是，别人也常常把最难啃的部分默认交给你，而你几乎不会说不，只会默默把它加进自己的清单。', '你可能正处在付出和回报不太对等的时期。嘴上说不在意，心里记得很清楚，只是你不会用抱怨的方式表达，而是把它变成更用力地做事。你甚至会用更高的标准来证明自己没被影响，这种证明别人看不见，只有你自己知道有多累。'],
+   read: ['标准太高，容易把关系变成考核；不会转弯，会在不值得的事上消耗自己。你对公平的敏感是优点，但世界并不总按公平运行，这一点会让你反复受伤。你越把「应该」当成底线，越容易在别人随意的做法里感到被冒犯。', '把「应该」换成「值得」。不是所有战场都要你去守，也不是所有人都配得上你的认真；学会退出，和学会坚持一样重要。你要留一点力气，给那些真的会回应你的人。'],
+   lines:['三十功名尘与土，八千里路云和月','莫等闲，白了少年头','文臣不爱钱，武臣不惜死']},
+
+  {id:'xuxiake', name:'徐霞客', sex:'m', era:'明 · 旅行家 / 地理考察者',
+   tag:['野路子','好奇心驱动','不怕吃苦'],
+   self:'一个把「想去看看」当成正经事的人。',
+   dims:{j:74,g:62,k:92,d:86,b:70,y:50,l:98,z:60},
+   av:{h:'hat',b:1,r:'#7A6A4A',p:'compass'},
+   slogan:'我的安全感，长在路上的。',
+   why:'你和他像的地方是「待不住」。不是浮躁，是你的能量来自移动——换个地方、换个视角，你就活了。',
+   egg:'你有一种奇怪的能力：在陌生城市里比在自家小区还认路。',
+   mode: ['你和徐霞客像的地方是「待不住」。不是浮躁，是你的能量来自移动：换个地方、换个视角，你就活了。你在熟悉的环境里会慢慢变钝，一出门反而清醒，连话都变多。你很难跟人解释这件事，因为听起来像借口，但你确实需要新的风景，才能重新有劲。', '现实里，你不太爱讲道理，更爱讲「我那次在……」。你的说服力来自亲身经历，不来自观点；你也常常是那个先把路线踩出来、再回来讲给别人听的人。你的故事很多，但落到具体执行时，会显得有点散，别人听完觉得精彩，却不太知道你到底要做什么。', '你心里有一条还没走的路线，最近总在深夜冒出来。你已经在查票价、看天气，只是还没找到一个可以名正言顺出发的理由。你知道一旦定下日期，很多事情就得跟着改动，而那种改动比出发本身更让你犹豫。'],
+   read: ['讨厌被约束，容易在需要长期投入的事上中途转场；自由惯了，也会让亲近的人没有安全感。你的世界很大，但大世界也需要一个能回去的地方，否则你会慢慢发现，自己一直在移动，却哪里都没有留下。', '挑一件你愿意为之停留三年的事。远方不会跑，但深度需要时间；先把一件事做深，你的自由才会有分量，而不只是逃跑。真正让人踏实的，是你知道自己随时能走，但选择留下。'],
+   lines:['丈夫当朝碧海而暮苍梧','吾荷一锹来，何处不可埋吾骨','路在脚下，不在图上']},
+
+  {id:'taoyuanming', name:'陶渊明', sex:'m', era:'东晋 · 诗人 / 隐士',
+   tag:['低欲望','边界感','自洽'],
+   self:'一个把「不干了」说得体面的人。',
+   dims:{j:58,g:82,k:66,d:90,b:84,y:40,l:96,z:62},
+   av:{h:'hat',b:1,r:'#5A7A6B',p:'gourd'},
+   slogan:'我不是躺平，我是换了个我认的赛道。',
+   why:'你的内核是「不将就」。你可以吃苦，但不愿吃没有意义的苦。你看得清很多事的荒诞，所以选择把力气留给喜欢的东西。',
+   egg:'你的社交电量很低，但一旦认了谁，能处很多年。',
+   mode: ['你的内核是「不将就」。你能吃苦，但不愿吃没有意义的苦。你看得清很多事的荒诞，所以选择把力气留给喜欢的东西，这不是清高，是你算过投入产出之后的决定。你对「热闹但空」的场合有一种生理性的疲惫，坐在里面会想去窗边站一会儿。', '现实里，你是那种安静退场的人。不解释、不撕破脸，只是慢慢不出现了。你的社交电量很低，但一旦认了谁，能处很多年；你的关系少而结实。别人觉得你突然就淡了，其实你已经在心里告别过很多次，只是没说出口。', '你正在给自己的人生做减法，删掉了一些人、一些局，也删掉了一些自我要求。删的时候很痛快，删完之后偶尔会有一点空，那种空不是后悔，是习惯被腾出来了，暂时还没有东西填进去。'],
+   read: ['退得太快，机会也会跟着退；「我不在乎」说多了，会真的失去争取的能力。你用不争保护自己，但也可能因此错过那些必须伸手才能够到的东西。淡泊久了，人容易连自己想要什么都懒得想。', '保留一件你愿意为之争一争的事。清高很好，但别让它变成躲；你可以不解释，但至少要让自己知道，你还在乎什么。那件事不用体面，但要是你真心想要的。'],
+   lines:['采菊东篱下，悠然见南山','不为五斗米折腰','悟已往之不谏，知来者之可追']},
+
+  {id:'baijuyi', name:'白居易', sex:'m', era:'唐 · 诗人 / 生活家',
+   tag:['人间烟火','共情力','会过日子'],
+   self:'一个把诗写得像聊天、把日子过得像样的人。',
+   dims:{j:70,g:90,k:74,d:82,b:90,y:82,l:68,z:78},
+   av:{h:'scholar',b:1,r:'#8A6B4A',p:'brush'},
+   slogan:'我的浪漫，是把日子过明白。',
+   why:'你和他的相似点是「落地」。你不喜欢悬空的大道理，你更在意今天这顿饭、这个人、这件事有没有被照顾好。',
+   egg:'你是那种「看着随和，其实很有主张」的人，底线清楚，只是不吵。',
+   mode: ['你和白居易的相似点是「落地」。你不喜欢悬空的大道理，更在意今天这顿饭、这个人、这件事有没有被照顾好。你的善意是可执行的，不是一种姿态。你也因此不太能忍受那种开完会什么都没变的场合，对你来说，讨论如果没有落到一个具体动作上，就等于没有发生。', '现实里，你会记得朋友的忌口、同事的难处，也会在关键时刻把话说得让人舒服。你看着随和，其实很有主张，底线清楚，只是不吵。你习惯先照顾场面，把自己的不满往后排，排到最后常常就没了，等你想起来的时候，气已经散了，只剩一点闷。', '你在平衡「想做的事」和「该做的事」，最近更偏向后者，有点不甘心。你已经很久没有为自己安排一件纯粹高兴的事了，连计划都在心里改成了「等这阵忙完」，而那阵忙完似乎总在下个月。'],
+   read: ['太会照顾场面，容易委屈真实想法；什么都想周全，最后最不周全的是你自己。你习惯先让别人舒服，久而久之，别人也默认你会让，连你自己都开始把退让当成一种性格。', '每个月留一件「只为自己」的事，不需要有用，也不需要理由。你先把自己过好，才有力气照顾别人；这不自私，这是续航。能长期对别人好的人，往往是因为自己也过得不差。'],
+   lines:['同是天涯沦落人，相逢何必曾相识','野火烧不尽，春风吹又生','晚来天欲雪，能饮一杯无']},
+
+  {id:'zhangheng', name:'张衡', sex:'m', era:'东汉 · 天文学家 / 发明家',
+   tag:['极客','钻牛角尖','动手派'],
+   self:'一个遇到「为什么」就必须拆开看看的人。',
+   dims:{j:66,g:60,k:94,d:94,b:68,y:72,l:86,z:70},
+   av:{h:'scholar',b:0,r:'#4F6B6B',p:'compass'},
+   slogan:'我不太会说话，但我能让它动起来。',
+   why:'你的天赋是「把抽象问题具体化」。别人满足于知道，你想知道怎么做到。你的快乐来自「弄明白了」，不来自「被夸了」。',
+   egg:'你有一种冷幽默：不主动讲，一讲就全场安静两秒，然后爆笑。',
+   mode: ['你的天赋是把抽象的问题具体化。别人满足于知道，你还想知道怎么做到。你的快乐来自「弄明白了」，不来自「被夸了」，所以你常常安静地沉在一件别人觉得没必要的事里。你能为了一个细节反复试很多次，而向别人解释这件事本身，对你是一种消耗。', '现实里，你是那种默默把工具修好、把流程理顺的人。功劳常被记在别人头上，你也不太争；你不是不在乎，是觉得解释一遍比做完还累。你的沉默被当成同意，你的随和被当成没有意见，于是一些本该属于你的位置，被很自然地分掉了。', '你正沉迷一件别人看不懂的事，但它让你踏实。你也隐约知道，该找个人把它讲出来了，否则它永远只是你一个人的乐趣。你缺的不是能力，是一个愿意听完、并且不会中途打断你的人。'],
+   read: ['专注过头会忽略身边的人；不擅长表达，容易在协作里被误读成冷淡。你把标准放在事情上，别人却把你的沉默理解成态度，这是你最常吃的亏。你不解释，别人就只能凭想象给你下结论。', '把你在做的事讲给一个外行听一次，讲到他听懂为止。能讲明白，才算真的做明白；也只有讲出来，你才能被正确地看见，你的能力也才有机会变成别人能用的东西。'],
+   lines:['人生在勤，不索何获','君子不患位之不尊，而患德之不崇','浑天如鸡子，天体圆如弹丸']},
+
+  {id:'zhuangzi', name:'庄子', sex:'m', era:'战国 · 思想家',
+   tag:['脑洞','超脱','不按剧本'],
+   self:'一个把人生当过家家的人。',
+   dims:{j:46,g:80,k:88,d:98,b:82,y:30,l:96,z:40},
+   av:{h:'bun',b:2,r:'#7B8FA8',p:'gourd'},
+   slogan:'你们争的那个位置，我坐过，也就那样。',
+   why:'你的能力是「抽身」——你能从一场争论里退出来，看见更荒诞也更大的东西。你不是不在乎，是知道在乎也没用。',
+   egg:'你半夜会突然想通一件很遥远的事，然后第二天照样迟到。',
+   mode: ['你的能力是「抽身」。你能从一场争论里退出来，看见更荒诞也更大的东西。你不是不在乎，是知道在乎也没用，所以选择把力气留给真正想做的事。你对别人的执念看得很清楚，也因此偶尔显得冷淡，其实你只是很难为一件自己不相信的事投入热情。', '现实里，你常被人说「想太多」，其实你只是比别人早看了一步。你在饭桌上话不多，一开口往往让全场安静两秒，然后有人笑出来。你的幽默是那种先让人愣一下、再回过味的类型，所以你不太适合快节奏的场合，需要一点点时间才显出来。', '你在某个局里已经「心不在此」了，只是还没找到体面的退出方式。你在等一个不必撕破脸的时机，也在悄悄试探别处的可能。你甚至在脑子里已经把告别的话演练过两遍，只是每次都删掉了最后那句。'],
+   read: ['太超脱会显得不上心；什么都看破，容易错过真正值得投入的东西。你擅长站在高处看，但高处待久了，会忘记地面上的温度，也会慢慢失去为一件小事高兴的能力。', '挑一个人、一件事，认真一回，认真到有点不体面。看得开是本事，肯投入也是；两者都有的，才算真的自由。你可以随时抽身，但要先真的进去过一次。'],
+   lines:['相濡以沫，不如相忘于江湖','子非鱼，安知鱼之乐','人生天地之间，若白驹之过隙']},
+
+  {id:'zhenghe', name:'郑和', sex:'m', era:'明 · 航海家 / 船队统领',
+   tag:['大气','组织力','见过世面'],
+   self:'一个把「去看看更大的世界」做成正经事业的人。',
+   dims:{j:88,g:78,k:90,d:76,b:66,y:94,l:70,z:90},
+   av:{h:'helmet',b:0,r:'#2E5A6B',p:'compass'},
+   slogan:'船大不大不重要，敢不敢开出去才重要。',
+   why:'你的长处是「带得动人」。你不是最耀眼的那种人，但你能让一群人相信这趟值得走。你稳，你也扛得住远路。',
+   egg:'你对「远方」没有恐惧，只有计划表。',
+   mode: ['你的长处是带得动人。你不是最耀眼的那种人，但你能让一群人相信这趟值得走。你稳，也扛得住远路，这种「稳」在长时间的项目里比聪明更值钱。你不太需要被表扬，你需要的是队伍还在往前走，只要这一点在，你就能继续撑下去。', '现实里，你是混乱中还能把流程理出来的人。别人慌，你开始点名分工；别人争，你先定规则。你不抢镜头，但你是让船不掉头的那个人。你也很清楚，一旦你开始焦虑，整条船都会跟着晃，所以你把情绪收得很紧。', '你手上有一件「很久还没成」的事，你还在坚持，只是偶尔会怀疑值不值。你没跟人说过这份怀疑，因为你怕一说，队伍就散了。你把这个问题自己保管着，像保管一件不该带上船的东西，只在深夜拿出来看一眼。'],
+   read: ['太能扛，容易忽略自己的极限；重承诺，容易被不值得的人消耗。你把队伍放在自己前面，久而久之，别人也忘了你也会累，连你自己都快忘了这件事需要被照顾。', '允许自己在半路补给一次。船长也需要靠岸；把「我没事」换成「我需要两天」，你会发现队伍并不会因此看轻你，反而会知道该怎么和你一起撑下去。'],
+   lines:['船队在我手上，一个人都不能少','风浪大的时候，先稳船，再谈方向','敢出海的人，才有资格谈远方']},
+
+  {id:'liqingzhao', name:'李清照', sex:'f', era:'宋 · 词人',
+   tag:['表达力','爱憎分明','骨头很硬'],
+   self:'一个把情绪写得比谁都准的人。',
+   dims:{j:80,g:92,k:82,d:90,b:96,y:52,l:90,z:76},
+   av:{h:'veil',b:0,r:'#7E5A8C',p:'brush'},
+   slogan:'我柔情，但我不软弱。',
+   why:'你的天赋是「精准命名情绪」。别人只知道难受，你能说清是哪一种难受。你心思细，但骨头硬；遇到不认同的事，宁可一个人，也不肯陪笑。',
+   egg:'你的微醺文学浓度极高，喝到刚刚好时说的话，往往最真。',
+   mode: ['你的天赋是精准命名情绪。别人只知道难受，你能说清是哪一种难受。你心思细，但骨头硬，遇到不认同的事，宁可一个人，也不肯陪笑。你对语言的敏感让你既容易被一句话伤到，也容易用一句话把别人说服，这两件事其实是同一种能力。', '现实里，你不太会当众发火，但你会写、会说、会记。你的反击通常是文字，而且一击到位；你的柔软只在亲近的人面前出现，那是一种挑过的柔软。你不喜欢把情绪当场摊开，更愿意过后用一句准确的句子收尾，所以你的很多话都在事后才说出口。', '你正处在「想通了但还有点舍不得」的状态里。理性跑在前面，情绪还在后面追，所以你一边做得很好，一边心里发酸。你甚至能清楚地说出自己为什么难受，却还是没法让它立刻过去，这种清醒反而让等待更难熬。'],
+   read: ['情绪浓度高，容易把一时的失落放大成结论；对自己和别人都要求真，也容易因此受伤。你的锋利保护了你，也把一些人挡在了外面，有些人不是不在意你，是怕接不住你的真。', '允许表达有停顿。不是每一句真话都要立刻说出口，留一点给自己消化；也说几句不为了准确、只为了舒服的话，关系有时候需要一点模糊的余地。'],
+   lines:['生当作人杰，死亦为鬼雄','此情无计可消除，才下眉头，却上心头','何须浅碧深红色，自是花中第一流']},
+
+  {id:'wuzetian', name:'武则天', sex:'f', era:'唐 · 皇帝',
+   tag:['强意志','掌控力','目标至上'],
+   self:'一个从来不问「我配不配」的人。',
+   dims:{j:98,g:62,k:94,d:92,b:82,y:96,l:88,z:86},
+   av:{h:'crown',b:0,r:'#6B3A6B',p:'seal'},
+   slogan:'我不是等机会的人，我是造机会的人。',
+   why:'你和她的相似点是「不认命」。你对自己有极高的要求，也对「被安排」有天然的反感。别人还在犹豫时，你已经在把局面往手里收。',
+   egg:'你的执行力有个副作用：身边的人会不自觉地开始听你的。',
+   mode: ['你和她的相似点是「不认命」。你对自己要求极高，也对被安排有天然的反感。别人还在犹豫的时候，你已经在把局面往手里收，而且收得很自然。你很少把选择权交给别人，哪怕那个人是善意的，因为你知道一旦交出去，后面就要连解释都一起交出去。', '现实里，你不太解释，也不太诉苦。你的态度很干脆：做出来给你们看。这份笃定有一个副作用，身边的人会不自觉地开始听你的，而你很少觉得这有什么问题。你也确实做得比多数人好，这反而让反对的声音更少，让判断少了一层校验。', '你正处在要不要再往前一步的关口。风险你看得很清楚，只是还在算值不值；你不是怕输，你是怕赢了之后发现那并不是自己想要的东西。这个问题你想得很细，却一直没跟人说，因为说出来就等于承认自己也有不确定。'],
+   read: ['强势久了，身边人会只敢顺从、不敢提醒；情绪藏得太好，容易在某个深夜一次性溃堤。你习惯自己消化，但消化不是没有代价的，那些没被处理的情绪不会消失，只会攒着。', '留一两个敢对你说「不」的人，并且真的听他们说完。真正的稳固不是没人反对，是有人敢反对；你不用变得柔软，只需要留一扇门，让提醒你的人能推得开。'],
+   lines:['明朝游上苑，火急报春知','花须连夜发，莫待晓风吹','日月当空，照临下土']},
+
+  {id:'huamulan', name:'花木兰', sex:'f', era:'北魏 · 传说人物 / 《木兰诗》',
+   tag:['行动派','护短','能吃苦'],
+   self:'一个先做事、再解释的人。',
+   dims:{j:92,g:80,k:74,d:70,b:60,y:66,l:88,z:96},
+   av:{h:'helmet',b:0,r:'#4B3F6B',p:'sword'},
+   slogan:'该我上的时候，我不会往后站。',
+   why:'你的底色是「顶上」。你不太会说漂亮话，但你会在最难的时候出现。你对家人朋友的保护欲很强，强到愿意替他们承担。',
+   egg:'你有个隐藏设定：别人越说「你不行」，你越要做成。',
+   mode: ['你的底色是「顶上」。你不太会说漂亮话，但会在最难的时候出现。你对家人朋友的保护欲很强，强到愿意替他们承担本来不必你承担的那部分。你判断一件事该不该做，标准往往不是「我想不想」，而是「有没有人得做」，于是你总在最不体面的位置上站得最稳。', '现实里，你的关心通常很具体：帮人搬东西、替人跑一趟、把事办完。你不太擅长说「我担心你」，但你会在对方需要的时候刚好出现。你也确实更习惯用做事表达感情，让你说一句软话，比干一天活还难，所以你在意的人常常是被行动照顾着，却听不到一句安慰。', '你正扛着一件别人不知道的事，还在说没事。你不是不想说，是觉得说了也没用，还要多解释一遍。你甚至已经想好，如果哪天真的撑不住，就自己找个地方待两天，把状态调回来，再照常出现。'],
+   read: ['太能扛，会让人以为你不需要帮忙；也容易把付出变成必须被认可的执念。你越是不喊累，别人越看不见你在撑，等你终于说出口的时候，他们已经习惯了你没事的样子。', '学会说「我有点撑不住了」。示弱不是撤退，是补给；你说一次，身边的人才知道该往哪儿伸手，也才知道自己在你这里是有位置的。'],
+   lines:['愿驰千里足，送儿还故乡','不用尚书郎','朔气传金柝，寒光照铁衣']},
+
+  {id:'shangguan', name:'上官婉儿', sex:'f', era:'唐 · 女官 / 才女',
+   tag:['高情商','笔杆子','场面人'],
+   self:'一个能在复杂局面里把话说得刚刚好的人。',
+   dims:{j:82,g:74,k:80,d:94,b:92,y:88,l:76,z:70},
+   av:{h:'veil',b:0,r:'#3F5A7A',p:'brush'},
+   slogan:'我写的每个字，都替人留了余地。',
+   why:'你的能力是「读懂空气再落笔」。你知道什么该说、什么该留白，也知道一句话在不同人耳朵里会变成什么。你不是圆滑，你是体面。',
+   egg:'你的脑子像有多线程：一边聊天，一边在心里改稿。',
+   mode: ['你的能力是读懂空气再落笔。你知道什么该说、什么该留白，也知道一句话在不同人耳朵里会变成什么。你不是圆滑，你是体面，体面需要成本，而你一直在付。你脑子里的措辞常常比说出口的多三倍，很多话在到嘴边之前，已经被你自己改过两遍。', '现实里，你是那个场面要塌时被想起来的人。你不一定最亲近，但最稳；你能把冲突翻译成别人听得进去的话，也能在最难的时候把话说得刚刚好。你知道很多人的底细，但很少拿它当武器，你更愿意用它来避免一场不必发生的争执。', '你在一个需要不断平衡的位置上，最近有点累，因为总是做「不得罪人」的选择。你已经很久没有痛快地说过一次自己的立场了。有时候你连自己想要什么都得先想一想，因为长期替别人权衡，替你权衡的那个人已经换成别人了。'],
+   read: ['太会顾全，容易丢了自己的立场；长期做润滑剂，会忘了自己也有情绪。你替所有人留了余地，唯独没给自己留一句真话的空间，久了连你自己都分不清哪句是真心、哪句是分寸。', '有些话不必说得漂亮。把真实想法留一句给最信得过的人，你会轻松很多；分寸感是对外的，坦诚也要留一份给自己，否则你会一直很稳，也一直很累。'],
+   lines:['叶下洞庭初，思君万里余','露浓香被冷，月落锦屏虚','笔下千行，不如一句真话']},
+
+  {id:'caiwenji', name:'蔡文姬', sex:'f', era:'东汉末 · 才女 / 琴家',
+   tag:['敏感','复原力','记得太久'],
+   self:'一个把苦难慢慢熬成作品的人。',
+   dims:{j:62,g:94,k:70,d:84,b:90,y:45,l:78,z:72},
+   av:{h:'veil',b:0,r:'#5A5A80',p:'scroll'},
+   slogan:'我什么都没保住，但我把故事带回来了。',
+   why:'你的感受力很深，深到容易被环境左右。但你有一种少见的能力：把受过的伤，慢慢变成能说出口的东西。',
+   egg:'你的记性对「情绪细节」特别好，别人忘了的小事，你都记得。',
+   mode: ['你的感受力很深，深到容易被环境左右。但你有一种少见的能力：把受过的伤，慢慢变成能说出口的东西。你不是不痛，是你会把痛整理成故事。你能记得当时的天气、语气和那件衣服的颜色，这些细节在你这里不是负担，是你理解世界的入口。', '现实里，你不太争，但你会记得；你不吵，但会在某个时刻把整段往事讲得很清楚。你的记性对情绪细节特别好，别人忘了的小事，你都收着。你也因此容易在旧事里反复碰同一处疼，明明已经过去很久，一句相似的话就能把当时的感受整个带回来。', '你正在整理一段旧经历，嘴上说过去了，其实还在给它找意义。你反复回看，不是放不下，是想把它安置好。你需要一个能讲完的结尾，哪怕这个结尾只有你自己承认，也要让它有个位置。'],
+   read: ['太敏感，容易反复回放同一件事；把委屈写成理解，久了会替别人开脱。你擅长替所有人找到理由，包括那些伤害过你的人，最后你会发现，理解得太充分，反而没人替你说话。', '允许自己只陈述、不解释。有些事不需要被理解，只需要被承认；说一句「我就是难受」，不补充理由，也是一种完整，也是一种把自己接回来的方式。'],
+   lines:['故乡隔兮音尘绝，哭无声兮气将咽','人生几何时，怀忧终年岁','我生之后，汉祚已衰']},
+
+  {id:'banzhao', name:'班昭', sex:'f', era:'东汉 · 史学家 / 女师',
+   tag:['沉稳','长期主义','收尾的人'],
+   self:'一个把别人没做完的事接过来做完的人。',
+   dims:{j:70,g:80,k:66,d:94,b:88,y:72,l:74,z:88},
+   av:{h:'veil',b:0,r:'#4A5A6B',p:'scroll'},
+   slogan:'我不抢开头，我负责把它写完。',
+   why:'你的稀缺之处是「耐力型认真」。你不追求一时的亮眼，你在意这件事最后有没有成。别人靠热情，你靠责任感。',
+   egg:'你有一种老派的靠谱：答应过的事，即使没人记得，你也会做完。',
+   mode: ['你的稀缺之处是耐力型认真。你不追求一时的亮眼，你在意这件事最后有没有成。别人靠热情，你靠责任感；热情会散，责任不会。你能在没有掌声的地方持续很久，这一点很少有人做到，也很少有人看见。', '现实里，你是团队里那个不显眼但不能少的人：你补位、你收尾、你把标准守住。你很少抢开场，但每次散场后收拾残局的都是你。你也不太会说「这个其实是我做的」，话到嘴边又咽回去，因为你总觉得提出来显得小气。', '你在做一件短期没人看见的事，偶尔会怀疑自己是不是太慢。你没跟人说，因为你不想让这份怀疑变成别人劝你放弃的理由。你已经把这件事做到第七十分，还差最后一段没人知道的路，而这段路通常最难走。'],
+   read: ['太稳会错过窗口；太习惯补位，会被人长期当成万金油。你做的很多事没有署名，久了别人就真以为那不是你的，等到需要有人被记住的时候，名单上往往没有你。', '偶尔站到台前一次，把你做的事署上自己的名字。不用邀功，只需要在合适的时候说一句「这部分是我做的」，让别人知道你在这里，也让你的付出有一个可被指认的位置。'],
+   lines:['兄志未竟，我来续之','史笔之下，不写虚言','慢一点，也别停']},
+
+  {id:'huangdaopo', name:'黄道婆', sex:'f', era:'元 · 纺织革新家',
+   tag:['动手能力','改良派','实在'],
+   self:'一个看不得「这么费劲还没做好」的人。',
+   dims:{j:76,g:78,k:94,d:80,b:56,y:90,l:84,z:74},
+   av:{h:'top',b:0,r:'#7A5A4A',p:'spindle'},
+   slogan:'抱怨没用，我改工具。',
+   why:'你的思维方式是「优化」。看到不顺的地方，你不吐槽，你会想怎么改。你不太会说，但你一动手，周围人的日子都变轻松了。',
+   egg:'你有个隐藏技能：把别人的活干得比他自己还顺。',
+   mode: ['你的思维方式是优化。看到不顺的地方，你不吐槽，你会想怎么改。你不太会说，但你一动手，周围人的日子都变轻松了，这种改善是沉默但有效的。你很难忍受一个明显可以更好却一直将就的流程，那种将就在你眼里几乎是一种浪费。', '现实里，你是那种闷头把流程重做一遍的人。做完也不邀功，只说「这样快一点」；你看不上低效，也常常顺手把别人的活干得比他自己还顺。这种顺手有时会让别人有点下不来台，你却没察觉，因为你只想着事情本身。', '你正琢磨一件「能不能更好」的事。别人觉得够用了，你觉得还能再省一半力气，你已经有了方案，只是还没决定要不要提出来。你担心提出来之后，要连解释带培训全都落在自己身上，最后变成又一件你的事。'],
+   read: ['看不上低效，容易显得不耐烦；太务实，会低估情绪和关系的价值。你以为把事做好就够了，但很多时候，别人更需要被问一句「你觉得呢」，那句话不是客套，是承认他也在场。', '改工具之前，先问一句「你更在意快，还是更在意稳」。答案往往不一样；先对齐，再动手，你的改良才会被欢迎，而不是被抵抗，你也才不用一个人扛下所有磨合。'],
+   lines:['经纬之间，也能改命','抱怨没用，我改工具','手上有活，心里就不慌']},
+
+  {id:'muguiying', name:'穆桂英', sex:'f', era:'北宋 · 民间传说 / 杨家将',
+   tag:['气场','敢担','硬核执行'],
+   self:'一个上场就不回头的人。',
+   dims:{j:94,g:76,k:86,d:78,b:66,y:74,l:80,z:94},
+   av:{h:'helmet',b:0,r:'#8C3B5A',p:'sword'},
+   slogan:'不用给我让路，我自己能过。',
+   why:'你的气场来自「敢」。你不是不怕，你是怕也上。你身上有一种让场面迅速安静的能力，那不是凶，是笃定。',
+   egg:'你的「我可以」有时候是硬撑，但你从不让它塌在别人面前。',
+   mode: ['你的气场来自「敢」。你不是不怕，你是怕也上。你身上有一种让场面迅速安静的能力，那不是凶，是笃定，别人从你的眼神里知道，这件事你认了。你反而在混乱中比在安稳中更清醒，越是没有退路，你越知道自己该做什么。', '现实里，关键时刻你特别靠得住：别人找退路，你找突破口。你不太会说安慰的话，但你会直接把最难的活拿走，这是你的表达方式。你不会安慰人，也不太会求助，两件事凑在一起，就显得你什么都能扛，也什么都能自己解决。', '你正带着一支不太齐的队伍，在等大家把节奏跑顺。你有点急，但你没催，因为你知道催出来的默契不结实。你已经在心里把每个人的短板都记了一遍，也在想该把谁放在哪个位置上。'],
+   read: ['太硬会让人不敢靠近；习惯自己顶，容易把身边人练成观众。你的「我可以」有时候是硬撑，但你从不让它塌在别人面前，所以也没人接得住，久了连你自己都相信了那个「我可以」。', '把「跟我上」偶尔换成「你先来，我兜底」。你会得到真正的队伍，也让别人有机会在你面前不必逞强，那样的关系才装得下两个人。'],
+   lines:['不用给我让路，我自己能过','旗在，阵就在','怕，是怕；上，是上']},
+
+  {id:'zhuowenjun', name:'卓文君', sex:'f', era:'西汉 · 才女',
+   tag:['敢爱敢断','生命力','有眼光'],
+   self:'一个敢为自己的选择买单的人。',
+   dims:{j:84,g:88,k:88,d:78,b:90,y:60,l:94,z:66},
+   av:{h:'top',b:0,r:'#8C5A6B',p:'gourd'},
+   slogan:'我选的人我自己负责，我不选的人我不回头。',
+   why:'你的可贵之处是「敢」。你敢先动心，也敢在不对的时候转身。你相信自己的眼光，也承担自己的判断。',
+   egg:'你的浪漫是有执行力的：不是想想，是真的会去做。',
+   mode: ['你的可贵之处是敢。你敢先动心，也敢在不对的时候转身。你相信自己的眼光，也愿意为自己的判断买单，这一点很多人做不到，他们连选择都要别人点头。你对犹豫的人有一种轻微的没耐心，因为在你看来，想太久本身也是一种答案。', '现实里，你不太等别人表态，你先表达。别人还在权衡，你已经把日子过起来了。你的浪漫是有执行力的，不是想想，是真的会去做。代价是，有些本来可以慢慢谈的事，被你一步走到了无法回头，而那种不可回头，有时候比冲动更沉。', '你正面对一个「要不要继续」的选择，心里其实有答案，只是还想再确认一次。你在等的不是建议，是一个允许自己决断的瞬间。你甚至已经想好了怎么开口，只在等一个不至于太难看的时机。'],
+   read: ['决断太快，会错过一些需要慢火的关系；敢爱敢恨的背面，是容易受伤。你不太给自己留后路，这在顺境里是勇气，在逆境里会变成孤注一掷，代价往往由你一个人承担。', '在「我决定了」之后留出一天的缓冲。你的直觉很准，但它值得被自己复核一次；慢一天不会让你失去什么，反而能让你少后悔一次，也少一次不得不回头。'],
+   lines:['愿得一心人，白头不相离','闻君有两意，故来相决绝','男儿重意气，何用钱刀为']},
+
+  {id:'xiedaoyun', name:'谢道韫', sex:'f', era:'东晋 · 才女',
+   tag:['机锋','清冷','审美洁癖'],
+   self:'一个随口一句话就能定住全场的人。',
+   dims:{j:68,g:76,k:70,d:94,b:94,y:48,l:90,z:64},
+   av:{h:'veil',b:0,r:'#5A7A8C',p:'brush'},
+   slogan:'我不是话少，我是没必要说废话。',
+   why:'你的聪明是「轻」的——不费力，不解释，一句话就到位。你对表达的精度有要求，宁可不说，也不说糙的。',
+   egg:'你的朋友圈可能半年不更新，但一发就有人截图。',
+   mode: ['你的聪明是轻的：不费力，不解释，一句话就到位。你对表达的精度有要求，宁可不说，也不说糙的；这种克制让你在人群里显得清冷，其实是挑剔。你能听出一句话里多余的那半句，也能看出一个人笑容里勉强的那部分。', '现实里，你在人群里不算热闹，但你说完话之后，场子会静一下。你不争位置，但你一站上去，别人就知道该把话交给你。你的评价很省，但分量重，所以有人会拿它当回事很久，也因此会有人因为你的沉默而猜疑。', '你正处在看不上又懒得争的疲惫期。不是没能力，是没兴趣；你在等一件值得你开口的事，等得有点久了。你甚至开始怀疑，是不是自己把标准放得太高，才让身边的一切都显得不够好。'],
+   read: ['太清冷会让人觉得你难接近；标准太高，容易对普通的好意也不耐烦。你的沉默保护了你的品味，也把一些人推远了，而那些人本来只是想靠近一点。', '试着把「这有什么好说的」换成一个具体的赞美。你的认可对别人很值钱；你不需要变热情，只需要让在意你的人收到回应，哪怕只有一句。'],
+   lines:['未若柳絮因风起','林下风气，自是一家','一句话，就够了']},
+  {id:'kongzi', name:'孔子', sex:'m', era:'春秋 · 思想家 / 民办教师鼻祖',
+   tag:['讲道理','守规矩','好为人师'],
+   self:'一个把「怎么做人」当成毕生课题的人。',
+   dims:{j:72,g:96,k:68,d:94,b:96,y:86,l:62,z:92},
+   av:{h:'scholar',b:2,r:'#8A6A4E',p:'scroll'},
+   slogan:'我没什么特别的，只是把「好好说话」说了一辈子。',
+   why:'你和他像的地方，是对「该怎样」这件事的执念：看到不对的事你会难受，看到有人愿意改你会真心高兴。你不一定爱说教，但心里始终有一套标准，也很少真的睁一只眼闭一只眼。',
+   egg:'隐藏设定：你说过的话，别人会在很多年后突然想起一句。',
+   mode: ['你和孔子共同的地方，是相信人和人是可以讲道理的。别人遇到冲突先想怎么赢，你先想怎么把话说清楚；你不喜欢靠情绪压人，也不相信一句「都这样」就能把事情糊过去。这套信念让你显得有点啰嗦，但它确实让很多关系没有散。','现实里，你常常是那个替朋友把话讲明白的人。你记得他说过什么、在意什么，也会在他钻牛角尖的时候陪他把道理捋一遍，哪怕那已经是第三次了。你不太管得住自己不去评价，看到不对的事很难只当没看见，哪怕这会让你显得多事。','最近你可能有点累，因为身边的人越来越不愿意听道理。他们要么急着要结论，要么只想被哄两句。你还在坚持「讲清楚」，只是偶尔会怀疑：是不是自己太较真了，是不是该学着少说一句。'],
+   read: ['你的风险在于把「应该」当成尺子，量别人也量自己。标准太高，容易让人不敢在你面前露怯；说教说多了，好话也会变成压力。你越想帮一个人变好，越容易把他推到你的对立面，最后他听不进你的道理，只记得你的语气。','把「你应该」换成「你打算怎么办」。先问再给建议，你会发现多数人并不缺道理，只缺一个被认真听完、不被评判的机会。你的标准留着给自己，用一半就够了；剩下那一半，留给别人的节奏。'],
+   lines:['学而时习之，不亦说乎','三人行，必有我师焉','君子和而不同']},
+
+  {id:'laozi', name:'老子', sex:'m', era:'春秋 · 道家鼻祖',
+   tag:['松弛','看得远','不争'],
+   self:'一个看透了、也懒得解释的人。',
+   dims:{j:46,g:90,k:82,d:98,b:70,y:42,l:98,z:58},
+   av:{h:'bun',b:2,r:'#6F7A5E',p:'gourd'},
+   slogan:'我不跟你争，我只是已经走开了。',
+   why:'你和他像的地方，是不太愿意参与那些「争一口气」的事。你看得见规则背后更荒诞的部分，所以宁可在旁边待着，也不愿把自己耗进去；你不是冷淡，是早就把力气算清楚了。',
+   egg:'隐藏技能：把天大的事说得像天气。',
+   mode: ['你和老子像的地方，是对「用力」这件事的天然怀疑。别人在往前挤，你在看这股劲要去哪；你不觉得每件事都值得争，也不觉得沉默就是输了。这种距离感让你显得淡，其实是你早就把账算过了，只是懒得把算式讲给别人听。','现实里，你很少主动参与争论。别人火气上来的时候，你在心里退后一步，看见这场架其实跟谁对谁错无关。你一句轻话就能把场面按下去，也常常因此被人当成不在乎；你不是不在乎，你是知道说重了也没用，反而把自己搭进去。','你现在大概正在某个局里慢慢抽身。不是被排挤，是你自己不想待了；你在等一个体面的时机，同时也在悄悄试探别处，只是懒得跟任何人解释这件事，包括那些真心想留你的人。'],
+   read: ['你的风险是「太早看穿」。看得太清楚，很多本来可以试试的事就不想动了；不争久了，争的能力也会退化。等到真需要你说一句重话、争一个位置的时候，你可能发现自己已经不太会了，只剩下几句漂亮的感慨。','挑一件你其实想要的事，认真争取一次，别用「随缘」当挡箭牌。你可以不求，但要分清是「不想要」还是「怕要不到」，这两件事差得很远。前者是选择，后者是躲。'],
+   lines:['上善若水','知人者智，自知者明','大巧若拙']},
+
+  {id:'quyuan', name:'屈原', sex:'m', era:'战国 · 楚国诗人',
+   tag:['理想主义','不肯将就','一身清白'],
+   self:'一个宁可不合群，也不肯把话咽回去的人。',
+   dims:{j:56,g:96,k:86,d:92,b:96,y:44,l:82,z:88},
+   av:{h:'scholar',b:1,r:'#5E7C86',p:'scroll'},
+   slogan:'我知道说了没用，但我做不到不说。',
+   why:'你和他像的地方，是那股「过不去」的劲。别人能接受「大家都这样」，你接受不了；你不是非要赢，你是非要干净。标准在你这里不是装饰，是你每天都要过的关口。',
+   egg:'隐藏设定：你的底线比你的脾气更硬。',
+   mode: ['你和屈原的共同底色，是心里有一条不能越的线。别人讲现实，你讲应该；别人说算了，你说不行。你不是不懂变通，是每次要变通的时候，心里那口气先顶上来，让你做不到装作没事，也做不到笑着把话咽下去。','现实里，你常常是那个在会上不合时宜的人。所有人都知道有问题，只有你会说出来，说完还要解释半天，还要承担「是不是你太敏感」的怀疑。你也会在事后后悔，不是后悔说了，是后悔没说得更好，让听见的人更难受。','你现在大概正处在「说了也没人听」的疲惫里。你还在坚持自己的判断，只是声音变低了；你在等一个真正能被理解的机会，而不是又一句「你别太较真」，因为那句话你已经听过太多次了。'],
+   read: ['你的风险是把清白看得比处境更重。理想太清楚的人，容易把身边的人也分成战友或者对手，中间地带就没了；你也容易把一次失望，理解成对整个人生的否定，然后在一个不相干的清晨突然提不起劲。','给理想留一点可以商量的余地：不是降低标准，而是把一个大原则拆成几个能落地的动作。你要守的是那条线，不是每一句话的措辞；措辞可以让，方向不能让，这两者分开了，你才走得远。'],
+   lines:['路漫漫其修远兮，吾将上下而求索','举世皆浊我独清','亦余心之所善兮，虽九死其犹未悔']},
+
+  {id:'zhangliang', name:'张良', sex:'m', era:'西汉 · 谋士',
+   tag:['算得远','不抢功','进退有度'],
+   self:'一个把局面看穿，却不站到最前面的人。',
+   dims:{j:66,g:76,k:80,d:98,b:88,y:92,l:72,z:70},
+   av:{h:'scholar',b:2,r:'#6E6A93',p:'scroll'},
+   slogan:'我不出主意的时候，是在算你下一步。',
+   why:'你和他像的地方，是习惯先看清再说话。你不喜欢抢风头，也不喜欢把功劳挂在身上，你要的是事情按你想的方向走；你更在意结果，而不是谁的名字写在上面。',
+   egg:'隐藏技能：别人还在争，你已经在想退路了。',
+   mode: ['你和张良像的地方，是「先算，再动」。别人凭感觉出手，你先看这盘棋有几条线；你不急着表态，也不急着站队，因为你知道说错一句比晚说一句更贵。你身上那种从容，不是天生的，是你提前把坏结果想过一遍。','现实里，你往往是那个提建议的人，不是做决定的人。你把台阶铺好，让别人走上去，自己退在后头；你还会顺手把别人的疏漏补上，然后不声张。这让你很安全，也让你被记住得少；你不太在意，但在某些夜里也会想：这到底是谁的事。','你现在大概正处在「要不要往前走一步」的阶段。你已经把利弊算得很清楚，反而更难下决心；你在等一个不必冒险也能成立的机会，而这样的机会通常要自己造，等是等不来的。'],
+   read: ['你的风险是「永远当第二个人」。谋得太多，容易失去直接承担的肌肉；什么都替别人想到，也会让人觉得你不可测。你把退路铺得太好，别人就不敢把最要紧的事交到你手上，因为你看起来总有别的选择。','挑一件你真正想主导的事，站到前面去一次。你不需要变得张扬，只需要在需要署名的时候不后退；你的判断值得一个名字，而不是永远跟在别人的名字后面。'],
+   lines:['运筹帷幄之中，决胜千里之外','良药苦口利于病，忠言逆耳利于行','功成身退']},
+
+  {id:'hanxin', name:'韩信', sex:'m', era:'西汉 · 兵家',
+   tag:['能扛','受得了委屈','要强'],
+   self:'一个从最底下爬起来、还想再往上走的人。',
+   dims:{j:95,g:50,k:92,d:93,b:60,y:74,l:86,z:82},
+   av:{h:'helmet',b:0,r:'#4E6A9A',p:'sword'},
+   slogan:'我忍过最难的那一次，就没打算再忍第二次。',
+   why:'你和他像的地方，是能咽下眼前的委屈，把力气攒到真正要用的时候。你不是没脾气，你是把脾气兑换成了实力；你对被看轻这件事，记性特别好。',
+   egg:'隐藏设定：你的沉默期，往往是你成长最快的时期。',
+   mode: ['你和韩信的共同底色，是「先把本事练到没人能否认」。你受过的委屈不会变成抱怨，会变成加练；别人休息的时候你在补课，因为你很清楚，清白是打出来的，不是说出来的。你也知道这条路慢，但你不打算换。','现实里，你是那种干活最狠、话最少的人。你把结果摆出来，等着别人承认，却不太会替自己争取；遇到不公你会生气，但你的生气通常表现为更用力，而不是更会说。这种模式让你被低估很久，也让你在团队里越来越难被替代，同时越来越难被提拔。','你现在大概正处在「值不值得」的关口。你已经证明过自己，却还是没拿到那个位置；你嘴上说不在意，心里在数每一次被跳过。你在等一个能一次翻身的机会，也在悄悄准备退路。'],
+   read: ['你的风险是把所有筹码押在「被承认」上。能力越强，越容易把人情和规则看成次要的东西；一旦遇到不懂你的人，你会用加倍的努力去证明，结果把自己拖进消耗战，赢了活，输了力气。','学会把功劳说出来。你不必变成会邀功的人，只需要在关键节点留下一句「这部分是我做的」；你的实力已经够，缺的只是一点对外的经营，而这部分是可以学的。'],
+   lines:['多多益善','背水一战','国士无双']},
+
+  {id:'xiangyu', name:'项羽', sex:'m', era:'秦末 · 西楚霸王',
+   tag:['刚','讲义气','不肯回头'],
+   self:'一个宁可败，也不肯绕路的人。',
+   dims:{j:96,g:64,k:84,d:68,b:78,y:42,l:94,z:88},
+   av:{h:'helmet',b:1,r:'#7A4A4A',p:'sword'},
+   slogan:'我赢了那么多次，只是没学会怎么输。',
+   why:'你和他像的地方，是宁可硬着来也不肯认输。你把「体面」看得比结果重，所以你赢的时候很像英雄，输的时候也绝不拖泥带水；你不太给自己留后路。',
+   egg:'隐藏技能：一句话能让全场不敢说话。',
+   mode: ['你和项羽的共同点，是「正面来」。你不擅长绕，也不愿意绕；面对问题更愿意直接撞上去，靠一股气把局面打开。这股气让你在很多人面前有说服力，也让你在需要耐心的地方损耗得很快，因为你把「慢慢磨」当成一种认输。','现实里，你是那种关键时刻敢拍桌子的人。别人还在算代价，你已经上了；你也确实扛得比别人多，还不太喊疼。只是你不太会示弱，也不太会听劝，一旦认定，就听不进另一种可能，哪怕那个人是真心为你好。','你现在可能正卡在一个「明明可以慢慢来，却想立刻解决」的关口。你已经想过退一步的方案，但每次一想到要低这个头，就又把它放回去了；你在等一个不用低头也能过关的办法。'],
+   read: ['你的风险是把「输一次」当成「全盘否定」。太在意体面的人，容易在最该止损的时候加倍投入；你也容易忽略那些不声不响但真正在帮你的人，因为他们的支持不够响亮，配不上你想要的场面。','允许自己在一次不重要的事上认个错。认小错不会伤到你的位置，反而是你练习转弯的机会；你不需要变软，只需要多一点可选项，路就不会只剩一条。'],
+   lines:['力拔山兮气盖世','破釜沉舟','无颜见江东父老']},
+
+  {id:'zhouyu', name:'周瑜', sex:'m', era:'东汉 · 江东都督',
+   tag:['少年得志','稳得住','讲究'],
+   self:'一个把事办得漂亮、也把面子守得干净的人。',
+   dims:{j:92,g:82,k:86,d:90,b:84,y:90,l:70,z:82},
+   av:{h:'helmet',b:1,r:'#4C7A6E',p:'sword'},
+   slogan:'我不只要赢，我想赢得好看。',
+   why:'你和他像的地方，是既要结果，也要体面。你做事有章法，做人有分寸，不太允许自己狼狈；你在意的不是别人的评价，是你自己的样子。',
+   egg:'隐藏技能：再乱的时候，你也能把话说得像结论。',
+   mode: ['你和周瑜的共同底色，是「既要成事，也要成样子」。你不太能接受一件事办得糙，也不接受自己在这种场合失态；你的稳定不全来自能力，也来自不想让人看见你慌。所以别人眼里的你，永远比实际状态从容一点。','现实里，你是团队里那个能定调的人：你先说一句，别人就知道该往哪走。你对分寸很敏感，别人一句话里的迟疑你都能听出来；这让合作很顺，也让你消耗得悄无声息，因为你把大量精力花在了读空气上。','你现在大概正处在一段「看起来都顺」的日子里。事情推得动，人也都配合，只是你心里有一块地方一直没被满足；你知道那不是能力问题，是你还想要点别的，而那个别的，不太好跟人开口。'],
+   read: ['你的风险是「太在意对不对得上」。体面久了，容易把自己捆在一个角色里，连委屈都要找个体面的说法；你也容易把同量级的人当成对手，哪怕对方根本没这个意思，你也会先竖起一层防备。','找一两个你可以不体面的人。在他们面前不用维持形象，你的松弛感才回得来；这对你不是放纵，是补给，就像弓弦也要松一松。'],
+   lines:['曲有误，周郎顾','大丈夫处世，当带三尺剑立不世之功','谈笑间，樯橹灰飞烟灭']},
+
+  {id:'wanganshi', name:'王安石', sex:'m', era:'北宋 · 变法宰相',
+   tag:['认死理','执行力强','不怕被骂'],
+   self:'一个认准了就要改到底的人。',
+   dims:{j:90,g:60,k:96,d:94,b:78,y:92,l:82,z:92},
+   av:{h:'scholar',b:1,r:'#5A6A8C',p:'seal'},
+   slogan:'我知道会得罪人，但我更怕什么都没变。',
+   why:'你和他像的地方，是看见问题就想动手改，而不是等别人来改。你不太在意过程中的评价，你在意结果有没有落地；你受不了明知不对却一直照着做。',
+   egg:'隐藏设定：你换过很多次说法，但主张一次没改。',
+   mode: ['你和王安石的共同底色，是「看不下去」。别人能忍的将就，你忍不了；你不满足于抱怨，你要动手改。这股劲让你在混乱里特别有用，也让你在需要妥协的场合显得不近人情，因为你把妥协读成了放弃。','现实里，你是那个提出方案的人。你把流程拆开、把责任写明，然后发现所有人都在讨论「这样行不行」，而不是「怎么让它行」。你会烦，会硬推，也会在推不动的时候更用力，而不是换个说法；你把换说法当成对原则的稀释。','你现在大概正处在一件「明明对，却推不动」的事上。你已经把道理讲清楚了，还是没人跟；你开始怀疑是不是自己太急，又不太甘心慢下来，因为一慢下来，那些原本就反对的人更有理由拖着。'],
+   read: ['你的风险是「把正确当成通行证」。方案对不等于时机对，人不到位，再好的改革也会变成对立；你也容易把反对意见统一理解成保守，从而失去真正有用的提醒，那些提醒往往藏在最难听的话里。','每次推进前，先找一个人问「你最担心什么」，并且真的回答他。你不是要变得更软，你是要让对的事活下来——活着才有机会改第二次，死了连辩白的机会都没有。'],
+   lines:['不畏浮云遮望眼，自缘身在最高层','春风又绿江南岸','天变不足畏，人言不足恤']},
+
+  {id:'fanzhongyan', name:'范仲淹', sex:'m', era:'北宋 · 名臣',
+   tag:['先人后己','有担当','心量大'],
+   self:'一个把别人的难处放在自己前面的人。',
+   dims:{j:88,g:94,k:76,d:92,b:94,y:86,l:82,z:96},
+   av:{h:'scholar',b:2,r:'#5F7A9C',p:'scroll'},
+   slogan:'我这点苦不算什么，别人过得好我才踏实。',
+   why:'你和他像的地方，是心里装得下比自己大的东西。你不常抱怨，遇到事第一反应是「那我能做什么」；你也不太会计较自己付出了多少。',
+   egg:'隐藏设定：你扛事的时候，比说事的时候更像你自己。',
+   mode: ['你和范仲淹的共同底色，是「先把该做的做了」。你对责任有一种朴素的认领：不是你的活你也看得见，看见了就放不下。这种自觉让你在人群里显得可靠，也让你很难真的休息，因为你一停下来就会觉得有事没做完。','现实里，你是那个主动补位的人。别人推的时候你接，别人争的时候你让；你不是没想法，是把想法排在事情后面。你也很少诉苦，因为你觉得比起有些人的处境，自己的累不值一提，说了反而显得矫情。','你现在大概正处在「撑得住但不太快乐」的阶段。事都在往前走，你也被人依赖着；只是偶尔会想，如果有一天你不撑了，这个局面会变成什么样，而这个念头每次都被你自己按下去。'],
+   read: ['你的风险是把「我能扛」当成义务。责任感太强的人，容易被集体默认成兜底选项；你越是表现得无所谓，别人越不会想到要问你一句累不累，久了连你自己都忘了可以说不。','给自己设一条线：哪些事你接，哪些事你只提建议。你不是要变得冷漠，你是要让这份担当能持续更久；一个人的善，得留得住，才叫善，一次性的燃烧只算壮烈。'],
+   lines:['先天下之忧而忧，后天下之乐而乐','不以物喜，不以己悲','塞下秋来风景异']},
+
+  {id:'baozheng', name:'包拯', sex:'m', era:'北宋 · 开封府',
+   tag:['硬','不绕弯','认理不认人'],
+   self:'一个把「该怎样」写在脸上的人。',
+   dims:{j:92,g:66,k:58,d:96,b:72,y:88,l:86,z:96},
+   av:{h:'crown',b:2,r:'#2F3A4A',p:'seal'},
+   slogan:'这事不对，我就说不对，不管你是谁。',
+   why:'你和他像的地方，是遇到不公时不会绕开。你不太会做人情，但你有一种让事情回到正轨的能力；在你这里，谁的面子都没有道理重要。',
+   egg:'隐藏技能：你一沉默，做错事的人就开始紧张。',
+   mode: ['你和包拯的共同底色，是「认理不认人」。你对规则的敏感远高于对关系的敏感，看到有人被欺负，你很难只当没看见；你也很难对一个明显不对的结论点头，哪怕全场都点了。','现实里，你不太会转弯。别人用「都这样」来解释，你会问「为什么就这样」；你能把一件事的关键挑出来，也常常因此把人挑得不舒服。你不是不知道这样会得罪人，你只是觉得不值得为这个绕，绕了反而对不起自己。','你现在大概正处在一件「明知有猫腻，却没人愿意捅破」的事上。你已经看清楚了，也在想值不值得由你来开口；你在等的不是证据，是一个不至于太孤立的时机。'],
+   read: ['你的风险是把「对错」当成唯一语言。人是有情绪的，你越硬，别人越只能防守；你也容易在坚持原则的过程中，把可以争取的人推成旁观者，最后剩下你一个人对着一堆道理。','说理之前先接一句情绪。你不需要变得圆滑，只需要在开口前承认对方也不容易；原则不会因此变软，反而更容易被听进去，因为人只有在不被羞辱的时候才听得进道理。'],
+   lines:['清心为治本，直道是身谋','廉者，民之表也','关节不到，有阎罗包老']},
+
+  {id:'qijiguang', name:'戚继光', sex:'m', era:'明 · 抗倭名将',
+   tag:['带队伍','讲方法','能练兵'],
+   self:'一个把热血变成制度的人。',
+   dims:{j:95,g:72,k:86,d:90,b:72,y:94,l:82,z:96},
+   av:{h:'helmet',b:1,r:'#3F5B7A',p:'sword'},
+   slogan:'光靠不怕死打不赢，得有人教他们怎么活下来。',
+   why:'你和他像的地方，是不满足于喊口号。你知道热血会散，所以更愿意定规则、建流程，让一群人真的能打；你不迷信士气，你相信训练。',
+   egg:'隐藏设定：你带过的人，后来都特别能扛。',
+   mode: ['你和戚继光的共同底色，是「要把事做成，不是做热闹」。你不相信靠一时的激情能撑住长期的事，所以你更愿意花时间在选人、分工、练基本功这些不显眼的地方，别人看着慢，你知道这是最省的那条路。','现实里，你是那个把队伍带起来的人。你先想每个人的位置，再想怎么让流程顺；你不太会鼓舞，但你会在关键时候站到最前面，让别人知道这活有人接得住。你对细节要求严，对人也护，所以队伍服你，但也怕你。','你现在大概正在带一支还不太成形的队伍。你有点急，但你没催，因为你知道硬催出来的配合是假的；你在心里排着每个人的长短处，也在等他们自己长出来，只是这个「等」比你想的更久。'],
+   read: ['你的风险是「太能扛就都归你」。队伍带得太好，别人会忘了这也需要成本；你越是不喊累，越容易被当成不会累。等到某天你真撑不住了，反而没人相信，因为你从来没给过信号。','定期把一部分事交出去，允许它以七十分完成。你要的不是每一步都完美，而是这条路有人能接着走；一个人做到九十分，不如三个人做到七十分还能接力。'],
+   lines:['封侯非我意，但愿海波平','一年三百六十日，多是横戈马上行','戚家军，不掠民']},
+
+  {id:'lishizhen', name:'李时珍', sex:'m', era:'明 · 医家',
+   tag:['较真','肯跑腿','实证派'],
+   self:'一个不信书上写什么、只信自己看见什么的人。',
+   dims:{j:54,g:90,k:86,d:96,b:74,y:80,l:78,z:94},
+   av:{h:'hat',b:2,r:'#6B7A4E',p:'gourd'},
+   slogan:'书上写错了，我就去山里再看一遍。',
+   why:'你和他像的地方，是不肯将就一个「大概」。别人说差不多就行，你会想知道到底是怎样，为此愿意多走很多路；你的认真是具体的，能落到手上的。',
+   egg:'隐藏技能：你问的问题，往往比答案更有用。',
+   mode: ['你和李时珍的共同底色，是「亲手确认过才放心」。你不喜欢转述，也不喜欢凭印象下判断；一件事你愿意自己走一遍，哪怕成本比听别人说高很多。你不觉得这叫认真，你觉得这叫基本。','现实里，你是那个会把资料翻到最后一页的人。别人觉得够了，你还要再查一遍；你不一定说，但你会悄悄把错的改掉，然后看着别人继续用错的东西，心里憋着。这种认真不太显眼，也不太容易被感谢。','你现在大概正迷在一件「别人觉得没必要」的事里。它占了你很多时间，也让你踏实；你隐约知道该把它讲出来，只是还没找到愿意听完的人，也没有把握讲了之后会不会被当成较真。'],
+   read: ['你的风险是把标准只留给自己。你不解释，别人就只能看到结果；长期如此，你的认真会被当成固执，你的沉默会被当成冷淡，而你其实只是没找到合适的说法。','把你查到的东西讲一遍给外行听。讲不明白的地方，往往正是你自己还没弄透的地方；讲明白了，你的认真才真正变成别人能用的东西，而不是只有你知道的存货。'],
+   lines:['身如逆流船，心比铁石坚','读书万卷，行路万里','药有君臣佐使']},
+
+  {id:'wangxizhi', name:'王羲之', sex:'m', era:'东晋 · 书圣',
+   tag:['手艺型','松弛','有点傲'],
+   self:'一个把一件事练到别人没法评价的人。',
+   dims:{j:52,g:84,k:92,d:90,b:98,y:62,l:88,z:74},
+   av:{h:'scholar',b:1,r:'#7A6B8C',p:'brush'},
+   slogan:'我不跟人比，我只跟上一版的我比。',
+   why:'你和他像的地方，是对「做好」有近乎固执的要求。你不太争位置，但你受不了自己的东西糙；别人夸你，你更在意哪里还不够。',
+   egg:'隐藏设定：你随手写的东西，别人会存很久。',
+   mode: ['你和王羲之的共同底色，是「手上的活要对得起自己」。你不太在意外部的评价，你在意的是这一版有没有比自己上一次好；这种标准不容易被满足，所以你看上去总是淡淡的，其实心里一直在打分，打分的人只有你自己。','现实里，你是那种把事情做得很细的人。别人交七十分的东西，你会再改到八十五；你不爱解释这个过程，也不太愿意让人看见半成品。这份自持让你有分量，也让你在某些场合显得难接近，尤其是对那些只想快速推进的人。','你现在大概正处在一段「想安静做点东西」的时间里。你对热闹没什么兴趣，也不急着让人看见；只是偶尔会担心：这样是不是太慢了，会不会等自己做完，这件事就已经不需要了。'],
+   read: ['你的风险是把标准变成一道墙。要求高的人，容易看不上普通的好意；你越是不解释，别人越容易把你的沉默当成傲慢，然后就不再主动靠近你了。','允许一次「就这样吧」。不是降低要求，而是让作品先见人；你的手艺不会因为一次不完美而掉价，反而会因为你愿意交流，长出你自己想不到的东西。'],
+   lines:['后之视今，亦犹今之视昔','天下第一行书','临池学书，池水尽墨']},
+
+  {id:'zhengchenggong', name:'郑成功', sex:'m', era:'明末 · 收复台湾',
+   tag:['认死理','敢赌','护着家'],
+   self:'一个把「这件事得有人做」扛在肩上的人。',
+   dims:{j:94,g:72,k:88,d:88,b:70,y:86,l:90,z:97},
+   av:{h:'helmet',b:0,r:'#4A5E7A',p:'sword'},
+   slogan:'这地方本来就是我们的，那就拿回来。',
+   why:'你和他像的地方，是遇到该做的事不会退。你身上有一股「不试一次不罢休」的劲，也有一种对自己人的护犊心；你不太算胜率，你算的是不做会怎样。',
+   egg:'隐藏设定：越是被说不可能，你越来劲。',
+   mode: ['你和郑成功的共同底色，是「认准了就干」。你不太问「有多大把握」，你先问「不做会怎样」；这股劲让你在别人都退的时候还在往前，也让你付出过一些不必要的代价，只是你不太把那些代价挂嘴上。','现实里，你是那个在关键时刻把人聚起来的人。你不一定最会讲话，但你会用行动表态；你护着自己人，对外却敢硬碰。这种一软一硬，让你的队伍愿意跟，也让谈判桌上的人摸不透你，不知道你哪句话是底线。','你现在大概正扛着一件「看起来不太可能成」的事。你已经算过风险，还是没退；你在等一个能翻盘的时机，也在悄悄准备最坏的结果，只是这件事你没跟任何人讲。'],
+   read: ['你的风险是把「不退」当成唯一选项。有些局是需要等的，硬上会让本来能成的事提前崩；你也容易把自己人护得太紧，听不进不同意见，最后出错的时候没有第二双眼睛。','给自己设一个止损点。不是认输，是让你下一次还能再战；真正的坚持不是不回头，是知道什么时候该绕一下，绕过去了才有下一场。'],
+   lines:['开辟荆榛逐荷夷','台湾者，中国之土地也','国姓爷']},
+
+  {id:'mozi', name:'墨子', sex:'m', era:'战国 · 墨家',
+   tag:['实干','讲公平','反战'],
+   self:'一个把道理做成工具的人。',
+   dims:{j:72,g:86,k:96,d:92,b:72,y:92,l:76,z:94},
+   av:{h:'hat',b:2,r:'#4E5A50',p:'compass'},
+   slogan:'别光说该帮，先想想怎么帮得上。',
+   why:'你和他像的地方，是讨厌空谈。你更愿意动手做一个能用的东西，而不是争论一个漂亮的道理；你判断一件事，先问它能不能落地。',
+   egg:'隐藏技能：你能把抽象的话翻译成一张图纸。',
+   mode: ['你和墨子的共同底色，是「能落地才算数」。别人讨论该不该，你先想怎么做；你对空转的会议、没有下文的方案有天然的反感，宁可自己去搭一个粗陋但能用的东西，也不想在会上多讲十分钟。','现实里，你是那个把想法变成流程的人。你会拆步骤、算成本、找更省力的做法；你不爱争对错，但你会在有人被不公平对待时站出来，因为那在你看来是「不该发生的事」，跟立场无关。','你现在大概正在琢磨一件「能不能更好用」的事。你已经有方案，只是还没决定要不要推出去；你担心的是推出去之后，解释和落地的活又全落到自己头上，而你手上已经有太多这样的事了。'],
+   read: ['你的风险是「只信方法」。太务实的人容易低估情绪，把关系当成可以优化的流程；你也容易因为看不惯低效，显得不耐烦，最后事情做成了，人却散了，下次没人愿意跟你搭。','动手之前先问一句「你最在意什么」。答案往往不是效率；先对齐再改良，你的方案才会被欢迎，而不是被当成挑剔。'],
+   lines:['兼相爱，交相利','非攻','尚贤']},
+
+  {id:'wangzhaojun', name:'王昭君', sex:'f', era:'西汉 · 和亲',
+   tag:['能忍','看得清','心里有家'],
+   self:'一个把难处咽下去、把事办成的人。',
+   dims:{j:62,g:96,k:66,d:90,b:86,y:72,l:92,z:90},
+   av:{h:'veil',b:0,r:'#8C6A86',p:'none'},
+   slogan:'没人问我想不想，那我就自己去把它走好。',
+   why:'你和她像的地方，是遇到没法选的事，也不会把自己弄得很狼狈。你心里有委屈，但你更在意的是别让别人为难；你的体面是替所有人省事。',
+   egg:'隐藏设定：你的沉默，比抱怨更让人心疼。',
+   mode: ['你和王昭君的共同底色，是「把不能选的事走好」。你很少当场反驳，也很少把情绪摊开；你会先把局面稳住，再自己一个人慢慢消化。别人以为你好说话，其实你只是把力气用在了不吵的地方。','现实里，你是那个在陌生环境里也能站住的人。别人以为你柔，其实你比多数人耐；你能跟不讲理的人和气相处，也能在最难的时候不崩。代价是，你的苦很少被人看见，因为你不喊，也不愿让人为难。','你现在大概正处在一个「身不由己」的位置上。你已经接受了，也做得很好；只是偶尔在夜里会想，如果当初有得选，自己会去哪，会不会过得更像自己一点。'],
+   read: ['你的风险是把「懂事」当成默认。太能忍的人，容易被安排，也容易忘了自己还有偏好；你越是不提要求，别人越不知道你也想要点什么，最后连你自己都不好意思开口了。','试着为一件小事较真一次。不是闹，是让别人知道你的边界在哪；你不需要变得强硬，只需要偶尔让人看见你也有想法，哪怕只是一个不字。'],
+   lines:['落雁之容','一身归朔漠，数代靖兵戎','千载琵琶作胡语']},
+
+  {id:'yangyuhuan', name:'杨玉环', sex:'f', era:'唐 · 贵妃',
+   tag:['会生活','感受力强','不设防'],
+   self:'一个把日子过成风景的人。',
+   dims:{j:50,g:92,k:80,d:82,b:94,y:60,l:72,z:52},
+   av:{h:'top',b:0,r:'#A45B6E',p:'none'},
+   slogan:'我不太会打算，但我会把今天过好。',
+   why:'你和她像的地方，是对美和感受的敏锐。你不擅长算计，但你很会让人在你身边放松；你相信喜欢是真实的，也愿意为这点真实付出。',
+   egg:'隐藏技能：你记住的是气氛，不是事情。',
+   mode: ['你和杨玉环的共同底色，是「感受优先」。你对氛围、对美感、对别人表情里的那点变化都很敏感；你不喜欢把生活过成一张日程表，更愿意它有一点即兴。你不擅长算，但你很擅长让人觉得这一刻值得。','现实里，你是那个让场面变好看的人。你不一定懂流程，但你知道怎么让人舒服，怎么把一句冷掉的话接回来；你也不太设防，别人对你好，你就真的相信。这份单纯让你很容易被喜欢，也很容易吃亏，且往往吃得莫名其妙。','你现在大概正处在一段「过得不错，但心里有点空」的日子里。你被照顾着，也被注视着；只是偶尔会想，除了这些，自己到底想要什么，而这个问题的答案你一直没想清楚。'],
+   read: ['你的风险是把「被喜欢」当成安全感。感受型的人，容易在顺境里失去对风险的判断；你也不太愿意面对难听的真相，宁可先把它解释成别的，等它自己找上门来。','给自己留一件独立的事，不靠任何人提供。它不必成功，只要是你自己的，你才会在任何处境里都站得住；被喜欢是运气，能自己站着才是底气。'],
+   lines:['回眸一笑百媚生','在天愿作比翼鸟','云想衣裳花想容']},
+
+  {id:'zhangsun', name:'长孙皇后', sex:'f', era:'唐 · 皇后',
+   tag:['稳','有分寸','心里有秤'],
+   self:'一个把「忍」用成了智慧的人。',
+   dims:{j:78,g:96,k:70,d:94,b:88,y:90,l:76,z:92},
+   av:{h:'crown',b:0,r:'#7A5E8C',p:'seal'},
+   slogan:'我不争，我只在该说话的时候说话。',
+   why:'你和她像的地方，是懂得什么时候该退。你不是没脾气，你是知道争一时不如争长远；你也知道一句难听的话，会毁掉很多年的关系。',
+   egg:'隐藏设定：你劝人的时候，从不让人难堪。',
+   mode: ['你和长孙皇后的共同底色，是「长线」。你能忍住当场赢的冲动，换一个更稳的结果；你也知道有些话说出来会伤人，所以会挑时机，而不是挑道理。你不是没有立场，你是把立场放在了更后面一点的地方。','现实里，你是那个在冲突里让对方冷静下来的人。你不站队，也不咄咄逼人；你会把话说到刚好够，剩下的留给人自己想。这种分寸让你在人群里被信任，也让你很累，因为你要一直清醒，一直收着力。','你现在大概正处在「都在靠你稳」的阶段。你把很多关系维护得很好，也把很多火气压下去了；只是偶尔会想，如果自己也不那么懂事，会怎么样，会不会有人替你兜一次。'],
+   read: ['你的风险是把「懂事」用成了自我消耗。你太会替别人想，别人就习惯不替你想；你也不太愿意争，久而久之，你的需求就没人记得，连提起来都显得突兀。','找一个人，说说你真正想要什么，不要修饰。你不用一直当那个稳的人；被照顾一次，不会削弱你的分寸，反而让你有本钱继续稳下去。'],
+   lines:['妻者，齐也','以柔克刚','母仪天下']},
+
+  {id:'pingyang', name:'平阳公主', sex:'f', era:'唐 · 娘子军',
+   tag:['敢','能组织','不服管'],
+   self:'一个自己拉起队伍的人。',
+   dims:{j:95,g:82,k:92,d:86,b:78,y:90,l:90,z:95},
+   av:{h:'helmet',b:0,r:'#8A5A4A',p:'sword'},
+   slogan:'既然没人给我兵，那我自己招。',
+   why:'你和她像的地方，是不等别人给机会。你更愿意自己搭一个局面，哪怕起步的时候只有几个人；你看得见谁能干什么，也敢用还没证明过的人。',
+   egg:'隐藏设定：你招人的时候，比谁都准。',
+   mode: ['你和她的共同底色，是「不等人安排」。你看到一件事该做，第一反应是自己怎么开始；你不怕起步小，你怕的是停在原地等。你不觉得等资源是稳妥，你觉得那是把主动权交出去。','现实里，你是那个把散沙聚起来的人。你能看出谁能干什么，也敢把位置给还没证明过的人；你不太守规矩，但你会把该赢的仗赢下来，所以跟着你的人不太计较你的脾气，他们计较的是你有没有带他们赢。','你现在大概正带着一件「自己发起」的事。资源不齐，人也不够，但你已经跑起来了；你在想的是怎么让它活得更久，而不是怎么让人承认你做得好，虽然后者其实也很重要。'],
+   read: ['你的风险是「带头太猛」。冲在前面的人，容易忘了队伍也需要休息；你也容易把别人的慢理解成不上心，从而自己接手，最后又变成你一个人扛，还觉得当初不如自己干。','允许队伍慢一点。你要的不是每一次都快，而是这条路以后没你也能走；把方法留下，比把人带到底更值钱，方法才是能传下去的东西。'],
+   lines:['娘子军','巾帼不让须眉','起兵于司竹']},
+
+  {id:'lianghongyu', name:'梁红玉', sex:'f', era:'南宋 · 女将',
+   tag:['硬','不惧','并肩'],
+   self:'一个在擂鼓时最像自己的人。',
+   dims:{j:92,g:80,k:82,d:84,b:72,y:82,l:86,z:96},
+   av:{h:'helmet',b:0,r:'#A05A50',p:'sword'},
+   slogan:'别问我是谁家的，先问这仗怎么打。',
+   why:'你和她像的地方，是遇事不怕。你不喜欢被保护，你更愿意站在能做事的位置上；你宁可冲在前面，也不愿在旁边看着着急。',
+   egg:'隐藏设定：紧张的时候，你反而更清楚该做什么。',
+   mode: ['你和梁红玉的共同底色，是「怕也上」。你不是没有恐惧，是你在怕的时候还能做事；越是乱，你越清楚自己该站在哪。别人以为你天生胆大，其实你只是把害怕往后放了半小时。','现实里，你是那个在危机里最靠得住的人。别人往后退，你往前站；你不爱说漂亮话，但你会把最难的部分扛走，也不太邀功。你也不喜欢被当成需要照顾的那一个，谁要是用那种语气跟你说话，你会立刻冷下来。','你现在大概正面对一件「必须硬着头皮上」的事。你没有十足把握，但你已经在准备；你在想的是怎么把损失压到最小，而不是怎么体面地退，虽然退这个选项你也不是没想过。'],
+   read: ['你的风险是「一直当那个顶住的人」。久了别人会以为你不需要支持；你也容易把脆弱藏起来，直到某天在一个不相干的场合突然泄了，而那时候身边没人知道该怎么接。','找一个人，说一次「我其实也怕」。说出来不会让你变弱，反而会让你有力气继续；硬，不必一个人硬到底。'],
+   lines:['击鼓战金山','巾帼英雄','以身许国']},
+
+  {id:'qinliangyu', name:'秦良玉', sex:'f', era:'明 · 白杆兵',
+   tag:['铁腕','能带兵','护民'],
+   self:'一个把家乡和队伍都护在身后的人。',
+   dims:{j:94,g:78,k:84,d:88,b:70,y:92,l:88,z:96},
+   av:{h:'helmet',b:0,r:'#5E6E8A',p:'sword'},
+   slogan:'我能打的仗，就不麻烦别人。',
+   why:'你和她像的地方，是遇到责任不推。你身上有一种「这活我来」的自觉，而且你真的干得下来；你不太指望别人，也不太放心交给别人。',
+   egg:'隐藏设定：你带的人，从不敢糊弄你。',
+   mode: ['你和秦良玉的共同底色，是「自己上」。你不习惯把难的事交给别人，也不放心交给别人；你的可靠不是说出来的，是一次次打出来的。你不太喜欢喊口号，你更习惯把事办完再说话。','现实里，你是那个把队伍和家都管住的人。你定规矩、盯执行，也护着自己人；你不太讲情面，但你从不占下属的便宜，所以跟着你的人服你，也知道跟着你不会白干。这份威信，是你拿辛苦换的。','你现在大概正处在一段「事多、人也多」的日子里。什么事都要你点头，你也习惯了；只是偶尔会觉得，好像没有一个人能替你分担，而你也从来没认真找人分担过。'],
+   read: ['你的风险是「什么都得自己来」。能力越强，越容易把队伍养成执行者；你也容易把关心变成要求，让亲近的人不敢示弱，最后你身边只剩下一群等你发话的人。','挑一件事彻底交出去，出问题也别立刻接手。你要的不是每一步都对，而是有人能替你顶一阵；顶过一次，他就知道怎么顶第二次。'],
+   lines:['白杆兵','忠贞侯','一门忠烈']},
+
+  {id:'qiujin', name:'秋瑾', sex:'f', era:'清末 · 革命者',
+   tag:['烈','不服','敢说'],
+   self:'一个宁可摔碎，也不肯被摆布的人。',
+   dims:{j:88,g:88,k:94,d:86,b:94,y:64,l:94,z:96},
+   av:{h:'bun',b:0,r:'#7A4A5E',p:'brush'},
+   slogan:'我不怕难，我怕一辈子没为自己活过。',
+   why:'你和她像的地方，是不肯把一生交代给别人安排。你可以吃苦，但不能接受没有选择；你对「应该怎样」这四个字有本能的抵触。',
+   egg:'隐藏设定：你说出的话，比你想的更有分量。',
+   mode: ['你和秋瑾的共同底色，是「不肯被安排」。你对「你就安稳点吧」这类话有本能的抵触；你宁愿辛苦，也不愿活成别人替你设计的样子。你也知道这条路不轻松，但你更怕的是到老都没为自己活过。','现实里，你是那个说话很直接的人。你看不惯的事会当场说，也会为了一个立场得罪人；你不怕孤立，反而在孤立里更有劲，所以你的朋友不多，但都很铁，都是被你这种直劲吸引来的。','你现在大概正处在一次「要不要赌一把」的选择里。你已经有答案，只是周围的声音太多；你在等一个能让自己彻底下定决心的契机，而不是又一个劝你稳一点的电话。'],
+   read: ['你的风险是把「不妥协」当成唯一姿态。立场太硬，容易把可以商量的事变成对抗；你也容易把身边温和的人看成软弱，从而错过真正愿意帮你的人，那些人往往不会喊得很响。','留一点余地给不同意见。你可以坚持方向，但不必每次都把话说到底；真正能走远的人，是知道什么时候该收一寸的。'],
+   lines:['身不得，男儿列','心却比，男儿烈','秋风秋雨愁煞人']},
+
+  {id:'xuetang', name:'薛涛', sex:'f', era:'唐 · 女诗人',
+   tag:['通透','才气','有分寸'],
+   self:'一个把心事写成手艺的人。',
+   dims:{j:46,g:92,k:88,d:92,b:96,y:72,l:84,z:72},
+   av:{h:'bun',b:0,r:'#7E6A96',p:'brush'},
+   slogan:'我写不好这个世界，但我能把它写清楚。',
+   why:'你和她像的地方，是能把感受变成表达。你不一定爱热闹，但你一说，别人就懂；你也知道自己的才华在哪，所以不太需要靠讨好换位置。',
+   egg:'隐藏技能：你能把难堪的事说得体面。',
+   mode: ['你和薛涛的共同底色，是「用表达消化世界」。你对细节敏感，也对分寸敏感；你不太会当众失态，你更愿意把情绪写下来，让它在纸上有形状。你不是不会难过，你只是不接受自己难看。','现实里，你在人群里不算吵，但你一开口别人会听。你会把场面话说到刚好，既不谄媚也不伤人；你也知道自己的才华在哪，所以不太需要靠讨好换位置，这一点让你在复杂的关系里保住了自己。','你现在大概正处在一段「想安静产出」的时间里。你不缺灵气，缺的是一个能长期做下去的环境；你在等一个不必委屈自己也能留下的地方，虽然你也知道这样的地方很少。'],
+   read: ['你的风险是把情绪都放进作品里。写得好不等于说得好，长期用创作消化感受，会让你在真实关系里越来越不会直接表达；等到需要说清楚的时候，你发现自己只会绕。','把一句心里话直接说给一个人听，不用润色。你的表达力很强，但关系需要的是原话，不是成品；原话虽糙，却是真的。'],
+   lines:['花开不同赏，花落不同悲','万里桥边女校书','浣花笺']},
+
+  {id:'guandaosheng', name:'管道昇', sex:'f', era:'元 · 书画家',
+   tag:['从容','有主见','会过日子'],
+   self:'一个把才华和日子都过明白的人。',
+   dims:{j:58,g:88,k:90,d:90,b:92,y:62,l:80,z:78},
+   av:{h:'bun',b:0,r:'#6E7E76',p:'brush'},
+   slogan:'我画我的，也过我的，两件事不冲突。',
+   why:'你和她像的地方，是不需要靠牺牲生活来证明才华。你要做得好，也要过得舒服；你不太靠争来确认位置，因为你知道自己手上的活值多少。',
+   egg:'隐藏设定：你说话很有底气，因为你不心虚。',
+   mode: ['你和管道昇的共同底色，是「不慌」。你不急着证明什么，也不太在意外界的节奏；你知道自己手上的活值多少，所以不需要靠争来确认位置。这种底气不是自大，是你练出来的。','现实里，你是那种该出手时就出手的人。平时温和，遇到原则问题却很硬；你会把日子过得有条理，也会在关键的事上替自己说话，不靠别人代言。别人以为你没脾气，其实你的脾气只放在该放的时刻。','你现在大概正处在「都还不错，但想要更稳」的阶段。你已经有自己的节奏，也在想怎么让它更长久；你在权衡的不是要不要，而是怎么要，因为你知道乱动比不动更危险。'],
+   read: ['你的风险是把「从容」变成慢半拍。太不着急的人，容易在需要果断的时候犹豫；你也容易因为看得开，把一些该争的机会放过去，事后想起来，只剩一句「那时候算了」。','挑一件真正想要的事，定一个时间点。不必着急，但要有期限；从容不是拖延，是知道自己什么时候出手。'],
+   lines:['你侬我侬','墨竹','管夫人']},
+
+  {id:'wencheng', name:'文成公主', sex:'f', era:'唐 · 和亲',
+   tag:['能适应','有大局','心里有光'],
+   self:'一个把远方过成故乡的人。',
+   dims:{j:70,g:96,k:76,d:92,b:86,y:90,l:86,z:92},
+   av:{h:'crown',b:0,r:'#8A6A78',p:'scroll'},
+   slogan:'路是别人指的，日子是我自己过的。',
+   why:'你和她像的地方，是能在陌生的处境里长出根。你不抱怨环境，你会去适应它，然后慢慢把它变好一点；你有一种把陌生变熟悉的能力。',
+   egg:'隐藏设定：你到哪儿都能把关系处明白。',
+   mode: ['你和文成公主的共同底色，是「把不能选的走成自己的」。你不太纠结「为什么会是我」，你更在意接下来怎么把这件事做好；你有一种把陌生变熟悉的能力，而且不太需要人教。','现实里，你是那个在新环境里最先安顿下来的人。你会观察、会学着融入，也会把自己会的东西带过去；你不争位置，但你慢慢就成了那个大家都需要的人，因为你能把事情接住。','你现在大概正处在一段「不太熟悉，但已经站住」的日子里。你已经适应了，也被人接受了；只是偶尔会想，自己原本想要的生活还在不在，那个想法有没有被一路的适应磨平。'],
+   read: ['你的风险是「太会适应」。适应力强的人，容易被放到任何位置都要你接住；你也容易把自己的失落藏在「我挺好的」里，久了自己都信了，等到想说的时候已经无从说起。','保留一件只属于自己的小事，不被任何角色占用。你不必一直适应，也需要有一块地方，是按你的意思来的。'],
+   lines:['唐蕃古道','一去千里','日月山']},
+
+  {id:'xianfuren', name:'冼夫人', sex:'f', era:'南朝 · 岭南首领',
+   tag:['威望','讲信义','镇得住'],
+   self:'一个靠信用镇住一方的人。',
+   dims:{j:92,g:92,k:80,d:90,b:80,y:94,l:86,z:96},
+   av:{h:'crown',b:0,r:'#5A6E5E',p:'seal'},
+   slogan:'我不靠兵多，我靠说话算数。',
+   why:'你和她像的地方，是靠信用而不是靠强势。你答应的事会做到，所以别人愿意听你的；你不太靠嗓门压人，你靠的是说过的话都算数。',
+   egg:'隐藏设定：你一开口，吵起来的场面就会停。',
+   mode: ['你和冼夫人的共同底色，是「信用即权威」。你不太靠嗓门压人，你靠的是说过的话都算数；你知道一次失信要用十次解释补，所以你不轻易承诺。你说话不多，但你的话在场上是有分量的。','现实里，你是那个能在两拨人之间做桥的人。你能听懂双方的顾虑，也敢在关键处拍板；你不站极端，但你一站出来，场面就会稳一点。这种位置很要紧，也很容易两头不讨好。','你现在大概正处在一个需要你出面调停的位置上。两边都还信你，只是都很急；你在等一个双方都能接受的落点，也在想这件事之后自己要不要退，退了会不会有人顶上来。'],
+   read: ['你的风险是「什么都由你担保」。你越有威信，别人越依赖你的判断；你也容易把公道扛成自己的责任，久了会累，也会被误解成偏心，而解释起来反而更麻烦。','让当事人自己谈一次，你只做见证。你不必每件事都担保；把规则立住，比把每个人都劝服更省力。'],
+   lines:['岭南圣母','唯用一好心','保境安民']},
+
+  {id:'liurushi', name:'柳如是', sex:'f', era:'明末 · 秦淮',
+   tag:['有骨气','清醒','不将就'],
+   self:'一个把体面活成骨气的人。',
+   dims:{j:62,g:90,k:86,d:92,b:96,y:66,l:90,z:88},
+   av:{h:'veil',b:0,r:'#6A5E86',p:'brush'},
+   slogan:'我可以低，但不能脏。',
+   why:'你和她像的地方，是处境不体面时也不会把自己弄丢。你心里有一条线，谁都不能碰；你越是被低估，越不肯解释。',
+   egg:'隐藏设定：你越是被低估，越不肯解释。',
+   mode: ['你和柳如是的共同底色，是「自己认自己」。你不太需要别人的认可，也不喜欢被同情；你更在意自己有没有对不起自己，而不是别人怎么评价你。这份自持让你在难处里反而更挺得住。','现实里，你说话很有分寸，也很有锋芒。你能在复杂的场合里把自己守住，也能在该表态的时候不含糊；你不轻易求人，宁可自己扛着，也不愿在别人面前显出一点狼狈。','你现在大概正处在一段「看得清、也不想再将就」的日子里。你已经知道哪些人不值得，也在想怎么体面地退出来；你在等一个不必撕破脸的说法，等不到就再等等。'],
+   read: ['你的风险是把骄傲当成盔甲。太要体面的人，容易在最需要帮助的时候开不了口；你也容易因为看得清，把还没看清的人先推开，错过了原本可以慢慢走近的人。','让自己被人帮一次。接受善意不会降低你的格调；真正的骨气，不是谁都不靠，而是知道该靠的时候能靠。'],
+   lines:['我见青山多妩媚','桃花得气美人中','如是']},
+
+  {id:'huangyueying', name:'黄月英', sex:'f', era:'三国 · 巧思',
+   tag:['聪明','动手派','不显摆'],
+   self:'一个不太说话、但什么都做得出来的人。',
+   dims:{j:52,g:82,k:96,d:92,b:66,y:88,l:78,z:84},
+   av:{h:'top',b:0,r:'#7A7E52',p:'compass'},
+   slogan:'别人夸我聪明，我其实只是拆得开。',
+   why:'你和她像的地方，是遇到问题先动手。你不喜欢空谈，你更愿意把东西做出来，让别人看见结果；你的聪明是有形状的。',
+   egg:'隐藏技能：家里的坏东西，最后都是你修好的。',
+   mode: ['你和黄月英的共同底色，是「做出来才算」。你对原理有兴趣，对动手更有兴趣；你不满足于知道，你要亲手验证一遍才安心。别人夸你想得多，你其实只是想把它做出来看看对不对。','现实里，你是那个默默把问题解决的人。你不抢话，也不太邀功；你会把复杂的事拆成几步，然后安静地做完。别人以为这很简单，只有你知道中间试了多少次，废了多少料。','你现在大概正琢磨一件「别人觉得没必要」的小东西。它占了你不少心思，也让你开心；你在想的是要不要拿出来，还是自己留着用就好，因为这属于你自己的乐趣。'],
+   read: ['你的风险是「安静到你被忽略」。你不表达，别人就默认你不需要；你的聪明如果没有出口，就会变成只有你自己知道的乐趣，别人也无从借力。','把你在做的事讲一次给外行听。能讲清楚，说明你真的懂；也只有讲出来，你的价值才会被正确地看见。'],
+   lines:['巧思','木牛流马','黄阿丑']},
+
+  {id:'mengmu', name:'孟母', sex:'f', era:'战国 · 教子',
+   tag:['长期主义','狠得下心','护犊'],
+   self:'一个为了一个目标，能搬三次家的人。',
+   dims:{j:72,g:98,k:70,d:96,b:86,y:92,l:82,z:94},
+   av:{h:'bun',b:0,r:'#8C7A5E',p:'spindle'},
+   slogan:'我不指望运气，我只把路铺好。',
+   why:'你和她像的地方，是肯为一件长期的事反复投入。你不相信一次性的努力，你相信环境和习惯；你也愿意为了在意的人，做不讨好的决定。',
+   egg:'隐藏设定：你为在意的人做的决定，事后看往往是对的。',
+   mode: ['你和孟母的共同底色，是「长线投入」。你能接受眼前的麻烦，只要它换来更远的确定；你不迷信天赋，你相信换个环境、立个规矩，人就会变。这种信念让你在别人放弃的地方还愿意试。','现实里，你是那个为在意的人做决定的人。你会狠下心切断不合适的东西，也会在别人不理解的时候坚持；你的爱不温柔，但很结实，而这份结实往往要很多年后才被承认。','你现在大概正为某个人的成长做着一些不讨好的事。你知道短期会被埋怨，还是做了；你在等的是很多年以后的一句「幸好当初」，而这句话你可能永远听不到。'],
+   read: ['你的风险是「替别人安排得太满」。你判断得准，但被安排的人未必需要；你也容易把关心变成标准，让对方觉得自己永远不够好，久了就不愿跟你说了。','留一部分决定给对方自己。你可以铺路，但要让他自己走；真正的教养，是让他有能力替自己做选择。'],
+   lines:['孟母三迁','断机教子','择邻而居']},
+
+  {id:'weizifu', name:'卫子夫', sex:'f', era:'西汉 · 皇后',
+   tag:['温和','有韧性','不争锋'],
+   self:'一个不靠锋芒、靠稳定留下来的人。',
+   dims:{j:74,g:92,k:66,d:90,b:82,y:88,l:78,z:90},
+   av:{h:'crown',b:0,r:'#8A6A7A',p:'seal'},
+   slogan:'我不抢，我只是把自己的位置站稳。',
+   why:'你和她像的地方，是靠稳而不是靠抢。你不喜欢明刀明枪，你更愿意用时间和可靠，让别人离不开你；你不争一时，你争的是长久。',
+   egg:'隐藏设定：你越不争，最后越是你留下。',
+   mode: ['你和卫子夫的共同底色，是「稳」。你不擅长争，也不喜欢当众较劲；你更愿意把手上的事做好，让结果自己说话。你相信时间会筛掉一些东西，也相信稳定本身就是一种力量。','现实里，你是那个不显山露水却一直在的人。别人来来去去，你始终在那个位置上；你不抢功，也不轻易得罪人，所以你的存在感不高，但根基很稳，关键时刻从不掉链子。','你现在大概正处在一段「看起来平静、其实要一直撑着」的日子里。你没跟谁说过自己的担心，你只是把每天的事照常做完，仿佛只要这样，就不会有人发现你在撑。'],
+   read: ['你的风险是把「不争」当成安全。不争久了，你会在需要开口时失去语言；你也容易把自己的需求藏得太深，让别人以为你没有，最后连争取的资格都被默认取消。','在关键处说一次你的立场。不必争抢，但要让别人知道你有边界；温和不等于没有锋芒，你的稳也需要一根骨头。'],
+   lines:['以柔守位','温良恭俭','卫氏一门']},
+
+];
+
+/* =========================================================
+   三、基础数据与工具
+   ========================================================= */
+const DIMKEYS = ['j','g','k','d','b','y','l','z'];
+const DIMNAME = {j:'决断',g:'共情',k:'开创',d:'洞察',b:'表达',y:'经营',l:'独立',z:'担当'};
+const DIMLINE = {
+  j:'拍板的时候不抖', g:'先感到别人的感受', k:'总想开一条新路',
+  d:'看见别人看不见的那层', b:'能把心里的话说清楚', y:'把人和事都安排明白',
+  l:'一个人也站得住', z:'该扛的时候不退'
+};
+const SIX = [
+  {n:'领导力', f:v=>v.j*0.55+v.z*0.45},
+  {n:'创造力', f:v=>v.k*0.60+v.b*0.40},
+  {n:'理性度', f:v=>v.d*0.55+v.y*0.45},
+  {n:'同理心', f:v=>v.g*0.70+v.z*0.30},
+  {n:'冒险性', f:v=>v.k*0.60+v.l*0.40},
+  {n:'坚韧度', f:v=>v.z*0.60+v.l*0.40},
+];
+
+const state = { sex:'all', answers:new Array(QUESTIONS.length).fill(-1), idx:0, result:null };
+let lastFocus = null;
+
+function el(id){ return document.getElementById(id); }
+function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
+function round(v){ return Math.round(v); }
+
+function showToast(msg){
+  const t = el('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('on'), 2000);
+}
+
+function showScreen(id){
+  ['screenIntro','screenQuiz','screenResult'].forEach(s=>{
+    el(s).classList.toggle('on', s===id);
+  });
+  window.scrollTo({top:0,behavior:'instant' in window ? 'instant' : 'auto'});
+}
+
+/* =========================================================
+   四、卡通形象（参数化 SVG）
+   ========================================================= */
+function mixHex(hex, target, t){
+  const n = parseInt(hex.slice(1), 16), m = parseInt(target.slice(1), 16);
+  const r = Math.round(((n>>16)&255)*(1-t) + ((m>>16)&255)*t);
+  const g = Math.round(((n>>8)&255)*(1-t) + ((m>>8)&255)*t);
+  const b = Math.round((n&255)*(1-t) + (m&255)*t);
+  return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+function mixHex(hex, target, t){
+  const n = parseInt(hex.slice(1), 16), m = parseInt(target.slice(1), 16);
+  const r = Math.round(((n>>16)&255)*(1-t) + ((m>>16)&255)*t);
+  const g = Math.round(((n>>8)&255)*(1-t) + ((m>>8)&255)*t);
+  const b = Math.round((n&255)*(1-t) + (m&255)*t);
+  return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+function avatarSVG(f, cls){
+  const a = f.av || {};
+  const hair = a.h || 'bun';
+  const beard = a.b || 0;
+  const robe = a.r || '#3F4E76';
+  const prop = a.p || 'none';
+  const isF = f.sex === 'f';
+
+  const P = {bg:'#E8DEC9', ink:'#2C2526', skin:'#EFC9AE', skinD:'#DFA98B',
+             cream:'#F4EBD8', gold:'#C6A45E', red:'#BE5340',
+             steel:'#9BA5B3', steelD:'#77818E'};
+  const robeD = mixHex(robe, '#241C17', .36);
+  const robeL = mixHex(robe, '#FFFFFF', .30);
+
+  const props = {
+    sword: `<g><rect x="100" y="24" width="9" height="66" fill="#DDE4EB"/><path d="M100,24 L104.5,14 L109,24Z" fill="#DDE4EB"/><rect x="94" y="75" width="21" height="6" fill="${P.gold}"/><rect x="99" y="81" width="7" height="24" fill="#6B4A34"/><path d="M102,87 H106" stroke="#3E2B1C" stroke-width="2"/></g>`,
+    fan: `<g><path d="M106,50 C96,56 92,73 94,96 L118,96 C120,73 116,55 106,50Z" fill="#F0E4C8"/><path d="M106,50 L98,96 M106,50 L104,96 M106,50 L108,96 M106,50 L114,96" stroke="#C6A45E" stroke-width="1.3" opacity=".8"/><rect x="101" y="92" width="10" height="18" rx="3" fill="#8C6A44"/></g>`,
+    scroll: `<g><rect x="93" y="64" width="15" height="38" fill="#F2E7CC"/><rect x="93" y="59" width="15" height="7" fill="#B79E6E"/><path d="M96,74 H105 M96,80 H105 M96,86 H105" stroke="#B79E6E" stroke-width="1.6"/></g>`,
+    brush: `<g><rect x="106" y="54" width="5" height="40" fill="#8C6A44"/><path d="M106,94 H111 L109.5,107 H107.5Z" fill="${P.ink}"/></g>`,
+    gourd: `<g><circle cx="107" cy="80" r="9" fill="#D8A85E"/><circle cx="107" cy="65" r="5.5" fill="#D8A85E"/><rect x="104.5" y="56" width="5" height="5" fill="#8C6A34"/><path d="M107,62 v6" stroke="#B9812F" stroke-width="1.2"/></g>`,
+    compass: `<g><circle cx="107" cy="76" r="11" fill="none" stroke="${P.gold}" stroke-width="2.6"/><path d="M107,67 V85 M98,76 H116" stroke="${P.gold}" stroke-width="1.8"/></g>`,
+    seal: `<g><rect x="96" y="67" width="17" height="17" rx="2" fill="${P.red}"/><rect x="100" y="71" width="9" height="9" fill="${P.cream}"/><rect x="102" y="73" width="5" height="5" fill="${P.red}"/></g>`,
+    spindle: `<g><circle cx="106" cy="78" r="12" fill="none" stroke="#D9BE8A" stroke-width="2.6"/><path d="M106,65 V91 M94,78 H118" stroke="#D9BE8A" stroke-width="1.4"/></g>`,
+    none: ''
+  }[prop] || '';
+
+  const armor = hair === 'helmet' ? `
+    <path d="M11,140 C12,121 20,109 35,103 L41,119 L29,140Z" fill="${robeD}"/>
+    <path d="M109,140 C108,121 100,109 85,103 L79,119 L91,140Z" fill="${robeD}"/>
+    <path d="M15,130 L39,118" stroke="${P.gold}" stroke-width="2.2" opacity=".5"/>
+    <path d="M17,122 L40,111" stroke="${P.gold}" stroke-width="2.2" opacity=".5"/>
+    <path d="M105,130 L81,118" stroke="${P.gold}" stroke-width="2.2" opacity=".5"/>
+    <path d="M103,122 L80,111" stroke="${P.gold}" stroke-width="2.2" opacity=".5"/>
+    <path d="M43,97 L60,126 L77,97 L70,95 L60,116 L50,95Z" fill="${robeL}"/>
+    <path d="M43,97 L60,126 L77,97" fill="none" stroke="${P.gold}" stroke-width="2.4" opacity=".55"/>
+    <circle cx="60" cy="126" r="3" fill="${P.gold}"/>` : `
+    <path d="M39,96 L60,130 L81,96Z" fill="${P.cream}"/>
+    <path d="M39,96 L60,130" stroke="${robeD}" stroke-width="4.2"/>
+    <path d="M81,96 L60,130" stroke="${robeD}" stroke-width="4.2"/>
+    <path d="M22,126 C40,134 80,134 98,126 L98,140 L22,140Z" fill="${robeD}"/>
+    <path d="M29,108 C33,118 33,130 31,140" stroke="${robeD}" stroke-width="2" opacity=".5"/>
+    <path d="M91,108 C87,118 87,130 89,140" stroke="${robeD}" stroke-width="2" opacity=".5"/>`;
+
+  const headwear = {
+    crown: `
+      <path d="M42,38 C42,24 49,16 60,16 C71,16 78,24 78,38 L80,41 L40,41Z" fill="${P.ink}"/>
+      <rect x="46" y="8" width="28" height="10" fill="${P.gold}"/>
+      <rect x="43" y="17" width="34" height="5" fill="${P.gold}"/>
+      <circle cx="60" cy="13" r="3.4" fill="${P.red}"/>
+      <path d="M41,40 L34,52 L39,54 L45,43Z" fill="${P.gold}"/>
+      <path d="M79,40 L86,52 L81,54 L75,43Z" fill="${P.gold}"/>`,
+    helmet: `
+      <path d="M36,40 C36,22 47,13 60,13 C73,13 84,22 84,40 L84,42 L36,42Z" fill="${P.steel}"/>
+      <rect x="36" y="37" width="48" height="5" fill="${P.gold}"/>
+      <path d="M60,13 V3" stroke="${P.red}" stroke-width="5"/>
+      <circle cx="60" cy="4" r="4.2" fill="${P.red}"/>
+      <path d="M36,40 L35,58 L42,60 L43,42Z" fill="${P.steelD}"/>
+      <path d="M84,40 L85,58 L78,60 L77,42Z" fill="${P.steelD}"/>`,
+    hat: `
+      <path d="M60,5 L101,36 C80,30 40,30 19,36Z" fill="#CBB27C"/>
+      <path d="M19,36 C40,30 80,30 101,36" stroke="#A98F55" stroke-width="3" fill="none"/>
+      <path d="M60,5 L101,36" stroke="#A98F55" stroke-width="2"/>
+      <path d="M48,14 H72" stroke="#8C7442" stroke-width="3"/>`,
+    scholar: `
+      <path d="M39,39 C39,22 48,15 60,15 C72,15 81,22 81,39 L83,41 L37,41Z" fill="${P.ink}"/>
+      <path d="M45,16 C45,7 51,3 60,3 C69,3 75,7 75,16Z" fill="${P.ink}"/>
+      <path d="M38,36 C28,34 24,37 21,41 L28,44 C32,40 35,39 41,40Z" fill="${P.ink}"/>
+      <path d="M82,36 C92,34 96,37 99,41 L92,44 C88,40 85,39 79,40Z" fill="${P.ink}"/>
+      <rect x="38" y="37" width="44" height="4.5" fill="${P.gold}"/>`,
+    bun: `
+      <path d="M39,39 C39,22 48,15 60,15 C72,15 81,22 81,39 L83,42 L37,42Z" fill="${P.ink}"/>
+      <circle cx="60" cy="9" r="9" fill="${P.ink}"/>
+      <rect x="37" y="38" width="46" height="4.5" fill="${P.gold}"/>`,
+    top: `
+      <path d="M39,39 C39,22 48,15 60,15 C72,15 81,22 81,39 L83,42 L37,42Z" fill="${P.ink}"/>
+      <circle cx="45" cy="10" r="7.5" fill="${P.ink}"/>
+      <circle cx="75" cy="10" r="7.5" fill="${P.ink}"/>
+      <rect x="37" y="38" width="46" height="4.5" fill="${P.gold}"/>`,
+    veil: `
+      <path d="M37,52 C34,29 45,14 60,14 C75,14 86,29 83,52 L87,88 L78,88 C81,68 80,50 76,42 C71,36 65,33 60,33 C55,33 49,36 44,42 C40,50 39,68 42,88 L33,88Z" fill="${P.ink}"/>
+      <path d="M60,15 V33" stroke="#4B3B37" stroke-width="1.4" opacity=".55"/>
+      <path d="M46,21 L74,17" stroke="${P.gold}" stroke-width="3"/>
+      <circle cx="76" cy="16" r="3" fill="${P.red}"/>`
+  }[hair] || '';
+
+  const beardSVG = beard === 0 ? '' : beard === 1 ? `
+    <path d="M52,65 Q60,62.5 68,65 L66.5,67.5 Q60,65 53.5,67.5Z" fill="${P.ink}"/>
+    <path d="M57.5,77 L60,86 L62.5,77Z" fill="${P.ink}"/>` : `
+    <path d="M40,45 C39,58 41,68 45,75 L50,71 C46,63 45,54 45,45Z" fill="${P.ink}"/>
+    <path d="M80,45 C81,58 79,68 75,75 L70,71 C74,63 75,54 75,45Z" fill="${P.ink}"/>
+    <path d="M52,65 Q60,62 68,65 L66,68 Q60,65 54,68Z" fill="${P.ink}"/>
+    <path d="M52,73 C52,86 56,96 60,101 C64,96 68,86 68,73 C66,78 54,78 52,73Z" fill="${P.ink}"/>`;
+
+  const brow = isF ? `
+    <path d="M43,45.5 L57,43.5 L57,46 L43,48Z" fill="${P.ink}"/>
+    <path d="M77,45.5 L63,43.5 L63,46 L77,48Z" fill="${P.ink}"/>` : `
+    <path d="M42,45 L58,42.5 L58,46.5 L42,49Z" fill="${P.ink}"/>
+    <path d="M78,45 L62,42.5 L62,46.5 L78,49Z" fill="${P.ink}"/>`;
+
+  const mouthColor = '#A8594F';
+
+  return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${f.name}人物立绘" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="140" fill="${P.bg}"/>
+    ${props}
+    <path d="M60,96 C44,96 30,104 20,116 C14,124 11,132 10,140 L110,140 C109,132 106,124 100,116 C90,104 76,96 60,96Z" fill="${robe}"/>
+    ${armor}
+    <rect x="50" y="78" width="20" height="22" fill="${P.skinD}"/>
+    <rect x="50" y="78" width="20" height="13" fill="${P.skin}"/>
+    <path d="M37,48 C33,48 32,53 33,57 C34,61 37,61 38,58Z" fill="${P.skin}"/>
+    <path d="M83,48 C87,48 88,53 87,57 C86,61 83,61 82,58Z" fill="${P.skin}"/>
+    <path d="M60,22 C73,22 83,32 83,49 C83,67 74,82 60,82 C46,82 37,67 37,49 C37,32 47,22 60,22Z" fill="${P.skin}"/>
+    <path d="M50,74 Q60,80 70,74 Q60,84 50,74Z" fill="${P.skinD}" opacity=".3"/>
+    ${brow}
+    <path d="M44,52 Q51,48.5 58,52 Q51,55.5 44,52Z" fill="${P.ink}"/>
+    <path d="M62,52 Q69,48.5 76,52 Q69,55.5 62,52Z" fill="${P.ink}"/>
+    <circle cx="51" cy="51.6" r="1.1" fill="${P.cream}" opacity=".85"/>
+    <circle cx="69" cy="51.6" r="1.1" fill="${P.cream}" opacity=".85"/>
+    <path d="M60,55 L56.5,64 L60.5,64Z" fill="${P.skinD}"/>
+    ${beardSVG}
+    <path d="M52,70 Q60,73.5 68,70" stroke="${mouthColor}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    ${headwear}
+  </svg>`;
+}
+
+/* =========================================================
+   五、路由与启动页
+   ========================================================= */
+const AVATAR_PICKS
+
+ = ['sushi','libai','wuzetian','xinqiji','liqingzhao','xuxiake'];
+
+function renderIntroAvatars(){
+  const mount = el('introAvatars');
+  if(!mount || typeof FIGS === 'undefined') return;
+  mount.innerHTML = AVATAR_PICKS.map((id,i)=>{
+    const f = FIGS.find(x=>x.id===id) || FIGS[i];
+    return `<span class="av" style="transform:rotate(${(i%2?-3:3)}deg)">${avatarSVG(f,'intro'+i)}</span>`;
+  }).join('') + '<span class="cap">古人不上台<br>只在生活里露个脸</span>';
+}
+
+el('sexSeg').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-sex]');
+  if(!b) return;
+  state.sex = b.dataset.sex;
+  [...el('sexSeg').children].forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+});
+
+el('startBtn').addEventListener('click', ()=>{
+  state.answers = new Array(QUESTIONS.length).fill(-1);
+  state.idx = 0;
+  state.result = null;
+  showScreen('screenQuiz');
+  renderQuiz();
+});
+
+el('homeBtn').addEventListener('click', ()=>{
+  showScreen('screenIntro');
+  renderIntroAvatars();
+});
+
+/* =========================================================
+   六、答题流程
+   ========================================================= */
+function renderQuiz(){
+  const q = QUESTIONS[state.idx];
+  el('qNow').textContent = String(state.idx+1).padStart(2,'0');
+  el('pBar').style.width = ((state.idx)/QUESTIONS.length*100) + '%';
+  const cur = state.answers[state.idx];
+
+  el('qMount').innerHTML = `
+    <div class="qbody" id="qbody">
+      <div class="qno">第 ${String(state.idx+1).padStart(2,'0')} 题 · 凭第一反应</div>
+      <h2 class="qtext">${q.q}</h2>
+      <p class="qhint">${q.h || '没有标准答案，选最像你的那一个'}</p>
+      <div class="opts" id="opts">
+        ${q.o.map((o,i)=>`<button class="opt${cur===i?' sel':''}" type="button" data-i="${i}">
+          <span class="idx">${'ABCD'[i]}</span><span class="txt">${o.t}</span>
+        </button>`).join('')}
+      </div>
+      <div class="qfoot">
+        <button class="linkbtn" type="button" id="prevBtn" ${state.idx===0?'disabled':''}>← 上一题</button>
+        <span class="hint">已选 ${state.answers.filter(a=>a>=0).length} / ${QUESTIONS.length}</span>
+        <button class="linkbtn" type="button" id="nextBtn">${state.idx===QUESTIONS.length-1?'看结果 →':'下一题 →'}</button>
+      </div>
+    </div>`;
+}
+
+function pickOption(i){
+  state.answers[state.idx] = i;
+  const opts = [...document.querySelectorAll('#opts .opt')];
+  opts.forEach((b,k)=>b.classList.toggle('sel', k===i));
+  el('pBar').style.width = ((state.idx+1)/QUESTIONS.length*100)+'%';
+
+  setTimeout(()=>{
+    if(state.idx < QUESTIONS.length-1){
+      state.idx++;
+      renderQuiz();
+    }else{
+      finish();
+    }
+  }, 230);
+}
+
+document.addEventListener('click', e=>{
+  const opt = e.target.closest('.opt[data-i]');
+  if(opt){
+    pickOption(Number(opt.dataset.i));
+    return;
+  }
+  if(e.target.closest('#prevBtn')){
+    if(state.idx>0){ state.idx--; renderQuiz(); }
+    return;
+  }
+  if(e.target.closest('#nextBtn')){
+    if(state.answers[state.idx] < 0){ showToast('先选一个最像你的'); return; }
+    if(state.idx < QUESTIONS.length-1){ state.idx++; renderQuiz(); }
+    else finish();
+  }
+});
+
+/* 键盘：1-4 选答，左右翻页 */
+document.addEventListener('keydown', e=>{
+  if(!el('screenQuiz').classList.contains('on')) return;
+  if(['1','2','3','4'].includes(e.key)) pickOption(Number(e.key)-1);
+  if(e.key==='ArrowLeft' && state.idx>0){ state.idx--; renderQuiz(); }
+});
+
+/* =========================================================
+   七、计分与匹配
+   ========================================================= */
+function dimStats(){
+  const mean = {}, sd = {};
+  DIMKEYS.forEach(k=>{
+    let m = 0, v = 0;
+    QUESTIONS.forEach(q=>{
+      const ws = q.o.map(o=>(o.w[k]||0));
+      const mi = ws.reduce((a,b)=>a+b,0)/ws.length;
+      m += mi;
+      v += ws.reduce((a,b)=>a+(b-mi)*(b-mi),0)/ws.length;
+    });
+    mean[k] = m;
+    sd[k] = Math.sqrt(v) || 1;
+  });
+  return {mean, sd};
+}
+
+function userDims(){
+  const {mean, sd} = dimStats();
+  const raw = {};
+  DIMKEYS.forEach(k=>{ raw[k] = 0; });
+  QUESTIONS.forEach((q,qi)=>{
+    const a = state.answers[qi];
+    if(a>=0){
+      const w = q.o[a].w;
+      for(const k in w) raw[k] += w[k];
+    }
+  });
+  const out = {};
+  DIMKEYS.forEach(k=>{
+    out[k] = clamp(62 + (raw[k]-mean[k])/sd[k]*16, 8, 99);
+  });
+  return out;
+}
+
+function shape(vec){
+  const mean = vec.reduce((a,b)=>a+b,0)/vec.length;
+  const std = Math.sqrt(vec.reduce((a,b)=>a+(b-mean)*(b-mean),0)/vec.length) || 1;
+  return vec.map(v=>(v-mean)/std);
+}
+
+function computeMatch(){
+  const u = userDims();
+  const pool = FIGS.filter(f=> state.sex==='all' || f.sex===state.sex);
+  const su = shape(DIMKEYS.map(k=>u[k]));
+  const scored = pool.map(f=>{
+    const sf = shape(DIMKEYS.map(k=>f.dims[k]));
+    let dist = 0;
+    DIMKEYS.forEach((k,i)=>{ dist += Math.abs(su[i]-sf[i]); });
+    dist /= DIMKEYS.length;
+    const sim = clamp(1 - dist/2, 0, 1);
+    return { f, dist, sim, pct: Math.round(clamp(80 + 18*sim, 82, 97)) };
+  }).sort((a,b)=> a.dist - b.dist);
+  return { u, best: scored[0], second: scored[1], all: scored };
+}
+
+function sixOf(v){
+  const o = {};
+  SIX.forEach(s=> o[s.n] = clamp(s.f(v), 0, 100));
+  return o;
+}
+
+/* =========================================================
+   八、图表
+   ========================================================= */
+/* =========================================================
+   八、图表
+   ========================================================= */
+function radarSVG(you, ta, keys, names){
+  const S = 380, cx = S/2, cy = S/2 + 4, R = 116;
+  const N = keys.length;
+  const ang = i => (-90 + i*360/N) * Math.PI/180;
+  const pt = (i, v) => [cx + Math.cos(ang(i))*R*v/100, cy + Math.sin(ang(i))*R*v/100];
+
+  let rings = '';
+  [0.25,0.5,0.75,1].forEach(r=>{
+    const p = keys.map((_,i)=>pt(i, r*100).join(',')).join(' ');
+    rings += `<polygon points="${p}" fill="none" stroke="rgba(196,181,253,${r===1?0.34:0.14})" stroke-width="1"/>`;
+  });
+  let spokes = '', labels = '';
+  keys.forEach((k,i)=>{
+    const [x,y] = pt(i,100);
+    spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(196,181,253,.16)"/>`;
+    const lx = cx + Math.cos(ang(i))*(R+32);
+    const ly = cy + Math.sin(ang(i))*(R+32);
+    const anchor = Math.abs(lx-cx)<6 ? 'center' : (lx>cx ? 'left':'right');
+    labels += `<text x="${lx}" y="${ly+4}" text-anchor="${anchor}"
+      font-size="12" font-family="'Noto Serif SC',serif" fill="#C3B8E8">${names[k]}</text>`;
+  });
+  const poly = vals => keys.map((k,i)=>pt(i, clamp(vals[k],0,100)).join(',')).join(' ');
+  return `<svg viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg" aria-label="能力结构雷达图">
+    ${rings}${spokes}
+    <polygon points="${poly(ta)}" fill="rgba(127,215,232,.10)" stroke="#7FD7E8" stroke-width="1.6" stroke-dasharray="5 3"/>
+    <polygon points="${poly(you)}" fill="rgba(139,92,246,.28)" stroke="#C084FC" stroke-width="1.8"/>
+    ${keys.map((k,i)=>{const [x,y]=pt(i,clamp(you[k],0,100));return `<circle cx="${x}" cy="${y}" r="2.6" fill="#E9D5FF"/>`;}).join('')}
+    ${labels}
+  </svg>`;
+}
+
+const DIMTIP = {
+  j:'你不太爱在关键处拍板，可以从小决定练起：先说出口，再慢慢修正。',
+  g:'你更习惯讲道理而不是接情绪，试着先问一句「你当时是什么感受」。',
+  k:'你更愿意走熟路，试着在熟悉的事里改一个做法，成本最低，收获也真实。',
+  d:'你常停在表面那层，多问一句「为什么会这样」，答案通常在第二层。',
+  b:'你把想法留在心里的次数太多，试着先说一个粗糙版本，再打磨它。',
+  y:'你不太爱做计划和整理，先把一件事拆成三步写下来，一切都会顺很多。',
+  l:'你容易依赖身边的人，独立完成一件小事，会让你的底气长出来一点。',
+  z:'你该扛的时候会往后退半步，主动认领一件小事，扛一次，就够用很久。'
+};
+
+/* =========================================================
+   九、结果页
+   ========================================================= */
+function finish(){
+  const lack = state.answers.findIndex(a=>a<0);
+  if(lack>=0){
+    state.idx = lack;
+    renderQuiz();
+    showToast('还有几道没选完');
+    return;
+  }
+  state.result = computeMatch();
+  showScreen('screenResult');
+  renderResult();
+}
+
+function gapParagraph(u, f){
+  const diffs = DIMKEYS.map(k=>({k, d: round(u[k]-f.dims[k])}));
+  const up = diffs.reduce((a,b)=> b.d>a.d?b:a);
+  const dn = diffs.reduce((a,b)=> b.d<a.d?b:a);
+  if(up.d < 4 && dn.d > -4){
+    return `把两条曲线叠在一起看，你和${f.name}的分布几乎重合：没有哪一项被拉开，也没有哪一项塌下去。这种相似不是巧合，说明你身上那套反应方式，和他处理世界的方式是同一个路数——只是你活在一个更需要解释的年代。`;
+  }
+  return `把两条曲线叠在一起看，你的「${DIMNAME[up.k]}」比${f.name}高出 ${up.d} 分，这是你比他更锋利的一面，也是你在人群里最容易被记住的地方。相对地，你的「${DIMNAME[dn.k]}」低了 ${Math.abs(dn.d)} 分——这不是缺点，只是说明这一块你还没练成习惯。${DIMTIP[dn.k]}`;
+}
+
+function renderResult(){
+  const { u, best, second } = state.result;
+  const f = best.f;
+  const sixYou = sixOf(u);
+  const sixTa = sixOf(f.dims);
+
+  const top3 = DIMKEYS.map(k=>({k, v:u[k]})).sort((a,b)=>b.v-a.v).slice(0,3);
+  const secondPct = Math.min(second.pct, best.pct - 2);
+
+  const sixNames = {};
+  SIX.forEach(s=>{ sixNames[s.n] = s.n; });
+  const sixKeys = SIX.map(s=>s.n);
+
+  const sixDiff = sixKeys.map(n=>({n, d: round(sixYou[n]) - round(sixTa[n])}));
+  const upSix = sixDiff.filter(x=>x.d>=4).sort((a,b)=>b.d-a.d).slice(0,2);
+  const dnSix = sixDiff.filter(x=>x.d<=-4).sort((a,b)=>a.d-b.d).slice(0,2);
+  let sixInsight = '这六项上你和 TA 几乎贴着走，没有明显的长板，也没有明显的短板——你们像的是整个配比，而不是某一项。';
+  if(upSix.length || dnSix.length){
+    const parts = [];
+    if(upSix.length) parts.push(`你的${upSix.map(x=>`<b>${x.n}</b>`).join('、')}明显高出 TA`);
+    if(dnSix.length) parts.push(`TA 的${dnSix.map(x=>`<b>${x.n}</b>`).join('、')}更稳`);
+    sixInsight = `这六项里，${parts.join('；')}。其余几项两人基本同频，差距都在四分以内。`;
+  }
+
+  const shareText = [
+    `我测出来是「${f.name}」，匹配度 ${best.pct}%`,
+    f.slogan,
+    `人物自画像：${f.self}`,
+    '测一测｜你最像哪位中国历史人物'
+  ].join('\n');
+
+  const modeLabs = ['共同的底色','现实表现','当前状态'];
+  const modeHTML = f.mode.map((t,i)=>`
+    <div class="para">
+      <div class="para-lab"><i></i><b>${modeLabs[i]}</b></div>
+      <p>${t}</p>
+    </div>`).join('');
+
+  el('resultRoot').innerHTML = `
+    <div class="topbar">
+      <span class="sealmark"><b>报</b>历史原型报告</span>
+      <button class="btn-ghost" type="button" id="againTop">再测一次</button>
+    </div>
+
+    <div class="chapter" style="margin-top:6px">
+      <div class="chapter-h"><span class="chap-no">01</span><span class="chap-t">人格映射</span><i></i></div>
+    </div>
+
+    <div class="hero-res">
+      <div class="hero-card">
+        <div class="hero-inner">
+          <div class="portrait">${avatarSVG(f,'big')}<span class="pname">${f.name}</span></div>
+          <div class="hero-meta">
+            <div class="hero-lab">你的本命历史人物</div>
+            <div class="hero-name">${f.name}</div>
+            <div class="hero-era">${f.era}</div>
+            <div class="tags">${f.tag.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+          <div class="ring" id="matchRing" style="--p:0">
+            <div class="rv"><b>${best.pct}<small style="font-size:13px">%</small></b><span>匹配度</span></div>
+          </div>
+        </div>
+        <p class="portrait-quote">人物自画像 · ${f.self}</p>
+      </div>
+    </div>
+
+    <div class="slogan-box">
+      <div class="slogan-lab">可以直接发出去的一句</div>
+      <p class="slogan-txt">「${f.slogan}」</p>
+      <button class="copybtn" type="button" data-copy="${encodeURIComponent(shareText)}">复制这句 · 带结果一起晒</button>
+    </div>
+
+    <div class="blk">
+      <h3>为什么是你</h3>
+      <p>${f.why}</p>
+    </div>
+
+    <div class="blk egg">
+      <h3>隐藏特质与小彩蛋</h3>
+      <p>${f.egg}</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-h"><span class="chap-no">02</span><span class="chap-t">性格结构</span><i></i></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <h4>八维能力结构</h4>
+        <div class="legend"><span><i class="ly"></i>你</span><span><i class="lt"></i>${f.name}</span></div>
+      </div>
+      <div class="radar-wrap">${radarSVG(u, f.dims, DIMKEYS, DIMNAME)}</div>
+      <div class="topdims">
+        ${top3.map(t=>`<div class="topdim"><b>${DIMNAME[t.k]}</b><i><span style="width:${round(t.v)}%"></span></i><em>${round(t.v)}</em></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <h4>六维特征对比</h4>
+        <div class="legend"><span><i class="ly"></i>你</span><span><i class="lt"></i>${f.name}</span></div>
+      </div>
+      <div class="radar-wrap">${radarSVG(sixYou, sixTa, sixKeys, sixNames)}</div>
+      <div class="sixgrid">
+        ${sixKeys.map(n=>`<div class="sg"><span class="sg-n">${n}</span><span class="sg-v">${round(sixYou[n])}<em> /${round(sixTa[n])}</em></span></div>`).join('')}
+      </div>
+      <p class="insight">${sixInsight}</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-h"><span class="chap-no">03</span><span class="chap-t">行为模式</span><i></i></div>
+    </div>
+    <p class="insight">下面三段，每段大约半分钟的阅读量。</p>
+    <div class="paras">${modeHTML}</div>
+
+    <div class="chapter">
+      <div class="chapter-h"><span class="chap-no">04</span><span class="chap-t">结果解读</span><i></i></div>
+    </div>
+
+    <div class="risk">
+      <div class="risk-lab">性格盲点与风险</div>
+      <p>${f.read[0]}</p>
+    </div>
+    <div class="advice">
+      <div class="risk-lab">给你的建议</div>
+      <p>${f.read[1]}</p>
+    </div>
+    <div class="blk">
+      <h3>你和他差在哪</h3>
+      <p>${gapParagraph(u, f)}</p>
+    </div>
+
+    <div class="quotes">
+      ${f.lines.map(l=>`<div class="quote"><p>「${l}」</p></div>`).join('')}
+      <p class="note">台词取自其诗文与传世语句，个别依其口吻作了轻微改写。</p>
+    </div>
+
+    <p class="second-line">你的第二顺位是 <b>${second.f.name}</b>（${secondPct}%）—— 和它比，你更像${f.name}一点。把这个结果发给朋友，看看他测出来是谁。</p>
+
+    <div class="actions">
+      <button class="btn" type="button" id="againBtn">再测一次</button>
+      <button class="btn-ghost" type="button" data-copy="${encodeURIComponent(shareText)}">复制分享文案</button>
+    </div>
+    <p class="footnote">本测试为趣味性格映射，不构成任何评价或预测。<br>历史人物以公开史料与传世作品为依据，人物形象为原创扁平插画。</p>
+  `;
+
+  requestAnimationFrame(()=>{
+    const ring = el('matchRing');
+    if(ring) ring.style.setProperty('--p', best.pct);
+    document.querySelectorAll('.bar i').forEach(b=>{ b.style.width = b.dataset.w + '%'; });
+  });
+}
+
+/* 复制 */
+
+document.addEventListener('click', async e=>{
+  const btn = e.target.closest('[data-copy]');
+  if(!btn) return;
+  const text = decodeURIComponent(btn.dataset.copy);
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast('已复制，去发出去吧');
+  }catch(err){
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); showToast('已复制，去发出去吧'); }
+    catch(e2){ showToast('复制失败，手动长按选择吧'); }
+    document.body.removeChild(ta);
+  }
+});
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('#againBtn') || e.target.closest('#againTop')){
+    state.answers = new Array(QUESTIONS.length).fill(-1);
+    state.idx = 0;
+    state.result = null;
+    showScreen('screenQuiz');
+    renderQuiz();
+  }
+});
+
+/* 启动 */
+renderIntroAvatars();
+</script>
+</body>
+</html>
