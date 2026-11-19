@@ -654,6 +654,7 @@ svg { display: block; }
 .test-canvas.no-enter { animation: none; }
 .test-canvas.no-enter .test-question-state > * { animation: q-fade .22s ease both; }
 @keyframes q-fade { from { opacity: .45; } to { opacity: 1; } }
+@keyframes vm-spin { to { transform: rotate(360deg); } }
 @keyframes test-in { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
 .test-content { position: relative; z-index: 3; min-height: inherit; display: flex; flex-direction: column; padding: 52px 37px 34px; }
 .test-brand-line { display: flex; align-items: center; justify-content: space-between; font-size: 9px; letter-spacing: .12em; opacity: .6; }

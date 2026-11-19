@@ -315,6 +315,7 @@
   const CLOUD = window.MindIsleCloud || null;
   let cloudReady = false;
   let cloudPulled = false;
+  let cloudSnapshotSettled = false; // 匿名云快照是否已拉取完成（含失败），用于避免分享链接先闪 404
 
   function applyCloudState(remote) {
     if (!remote || !remote.tests || !Array.isArray(remote.tests)) return false;
@@ -1054,6 +1055,9 @@
   function publicUnavailable(title) {
     return '<div class="public-shell"><div class="public-stage"><div class="test-canvas test-theme-paper"><div class="test-content"><div class="test-brand-line"><b>心屿 MIND ISLE</b><span>PRIVATE LINK</span></div><div class="test-cover-state"><div class="test-cover-kicker">LINK UNAVAILABLE</div><div class="test-cover-title">这套测试<br>暂时无法访问</div><p class="test-cover-subtitle">「' + esc(title || '该测试') + '」当前未上架或已停止分发，请联系发给你链接的人。</p></div></div></div></div></div>';
   }
+  function publicLoading() {
+    return '<div class="public-shell"><div class="public-stage"><div class="test-canvas test-theme-paper"><div class="test-content"><div class="test-cover-state"><div class="test-cover-art" style="width:64px;height:64px;font-size:30px;animation:vm-spin 1.2s linear infinite;border:3px solid #e4e8e1;border-top-color:#416d5d;border-radius:50%;display:grid;place-items:center"></div><p class="test-cover-subtitle" style="margin-top:18px">正在打开测试…</p></div></div></div></div></div>';
+  }
   function publicNotfound() {
     return '<div class="public-shell"><div class="public-stage"><div class="test-canvas test-theme-paper"><div class="test-content"><div class="test-brand-line"><b>心屿 MIND ISLE</b><span>404</span></div><div class="test-cover-state"><div class="test-cover-kicker">LINK NOT FOUND</div><div class="test-cover-title">这条链接<br>已经不在了</div><p class="test-cover-subtitle">请向发给你链接的人确认地址，或联系管理员重新获取。</p><button class="test-main-button" onclick="location.hash=\'/admin/tests\'">返回管理台</button></div></div></div></div></div>';
   }
@@ -1694,7 +1698,15 @@
   function render(force=false) {
     const path = location.hash.replace(/^#/,'') || '/admin';
     if(path==='/login') { root.innerHTML=renderLogin(); return; }
-    if(path.startsWith('/q/')) { const slug=decodeURIComponent(routeSlug()); const test=data.tests.find(t=>t.slug===slug); if(test && test.status!=='active' && !session) { root.innerHTML=publicUnavailable(test.title); return; } renderPublicPage(test); return; }
+    if(path.startsWith('/q/')) {
+      const slug=decodeURIComponent(routeSlug());
+      const test=data.tests.find(t=>t.slug===slug);
+      // 访客打开分享链接时，本地可能还没有云端数据。云快照拉取完成前先显示"加载中"，
+      // 避免先闪一下"链接不存在"、等云端返回又变成解锁页的跳变。
+      if(!test && !session && CLOUD && CLOUD.ready && !cloudSnapshotSettled) { root.innerHTML=publicLoading(); return; }
+      if(test && test.status!=='active' && !session) { root.innerHTML=publicUnavailable(test.title); return; }
+      renderPublicPage(test); return;
+    }
     if(!session) { location.hash='#/login'; return; }
     if(path==='/admin'||path==='') root.innerHTML=renderDashboard();
     else if(path==='/admin/tests') root.innerHTML=renderTestsPage();
@@ -1716,7 +1728,16 @@
   if(CLOUD && CLOUD.ready){
     if(CLOUD.isSignedIn()) cloudPull();
     else CLOUD.pullStateAnon().then(remote=>{
-      if(remote && applyCloudState(remote) && location.hash.startsWith('#/q/')) rerender();
-    }).catch(()=>{});
+      cloudSnapshotSettled = true;
+      const applied = remote && applyCloudState(remote);
+      if(location.hash.startsWith('#/q/')) rerender();
+      else if(applied) rerender();
+    }).catch(()=>{
+      cloudSnapshotSettled = true;
+      if(location.hash.startsWith('#/q/')) rerender();
+    });
+  } else {
+    // 无云端配置时也要结束加载态，避免分享链接一直转圈
+    cloudSnapshotSettled = true;
   }
 })();
